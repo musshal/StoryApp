@@ -2,7 +2,7 @@ package com.dicoding.storyapp.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ListStoryResponse(
+data class StoryResponse(
     @field:SerializedName("id")
     val id: String,
 
