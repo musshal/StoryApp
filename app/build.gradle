@@ -16,6 +16,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "STORY_API", "\"https://story-api.dicoding.dev/v1/\""
     }
 
     buildTypes {
