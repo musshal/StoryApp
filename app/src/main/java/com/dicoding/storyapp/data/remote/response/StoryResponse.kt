@@ -19,8 +19,8 @@ data class StoryResponse(
     val createdAt: String,
 
     @field:SerializedName("lat")
-    val lat: Double,
+    val lat: Float,
 
     @field:SerializedName("lon")
-    val lon: Double
+    val lon: Float
 )
