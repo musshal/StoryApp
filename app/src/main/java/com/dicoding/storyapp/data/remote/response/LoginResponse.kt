@@ -10,5 +10,5 @@ data class LoginResponse(
     val message: String,
 
     @field:SerializedName("loginResult")
-    val loginResult: ArrayList<LoginResultResponse>
+    val loginResult: List<LoginResultResponse>
 )
