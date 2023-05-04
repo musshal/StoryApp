@@ -1,7 +1,7 @@
 package com.dicoding.storyapp.data.local.entity
 
 data class LoginEntity(
-    var userId: String,
-    var name: String,
-    var token: String
+    var userId: String? = null,
+    var name: String? = null,
+    var token: String? = null
 )
