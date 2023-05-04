@@ -1,9 +1,11 @@
 package com.dicoding.storyapp.data.local.preferences
 
 import android.content.Context
-import com.dicoding.storyapp.data.local.entity.LoginEntity
+import com.dicoding.storyapp.data.local.entity.UserEntity
 
-internal class LoginPreference(context: Context) {
+internal class UserPreference(context: Context) {
+
+    private val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFS_NAME = "login_pref"
@@ -12,9 +14,7 @@ internal class LoginPreference(context: Context) {
         private const val TOKEN = "token"
     }
 
-    private val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-    fun setLogin(value: LoginEntity) {
+    fun setLogin(value: UserEntity) {
         val editor = preferences.edit()
         editor.putString(USER_ID, value.userId)
         editor.putString(NAME, value.name)
@@ -22,8 +22,8 @@ internal class LoginPreference(context: Context) {
         editor.apply()
     }
 
-    fun getLogin(): LoginEntity {
-        val entity = LoginEntity()
+    fun getLogin(): UserEntity {
+        val entity = UserEntity()
         entity.userId = preferences.getString(USER_ID, "")
         entity.name = preferences.getString(NAME, "")
         entity.token = preferences.getString(TOKEN, "")
