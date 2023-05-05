@@ -1,33 +1,53 @@
 package com.dicoding.storyapp.data.local.preferences
 
-import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.dicoding.storyapp.data.local.entity.UserEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-internal class UserPreference(context: Context) {
-
-    private val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+internal class UserPreference private constructor(private val dataStore: DataStore<Preferences>) {
 
     companion object {
-        private const val PREFS_NAME = "login_pref"
-        private const val USER_ID = "user_id"
-        private const val NAME = "name"
-        private const val TOKEN = "token"
+        @Volatile
+        private var INSTANCE: UserPreference? = null
+
+        private val USER_ID = stringPreferencesKey("userId")
+        private val NAME = stringPreferencesKey("name")
+        private val TOKEN = stringPreferencesKey("token")
+
+        fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
+            return INSTANCE ?: synchronized(this) {
+                val instance = UserPreference(dataStore)
+                INSTANCE = instance
+                instance
+            }
+        }
     }
 
-    fun setLogin(value: UserEntity) {
-        val editor = preferences.edit()
-        editor.putString(USER_ID, value.userId)
-        editor.putString(NAME, value.name)
-        editor.putString(TOKEN, value.token)
-        editor.apply()
+    suspend fun setLogin(user: UserEntity) {
+        dataStore.edit { preferences ->
+            preferences[USER_ID] = user.userId
+            preferences[NAME] = user.name
+            preferences[TOKEN] = user.token
+        }
     }
 
-    fun getLogin(): UserEntity {
-        val entity = UserEntity()
-        entity.userId = preferences.getString(USER_ID, "")
-        entity.name = preferences.getString(NAME, "")
-        entity.token = preferences.getString(TOKEN, "")
+    fun getLogin(): Flow<UserEntity> {
+        return dataStore.data.map { preferences ->
+            UserEntity(
+                preferences[USER_ID] ?: "",
+                preferences[NAME] ?: "",
+                preferences[TOKEN] ?: ""
+            )
+        }
+    }
 
-        return  entity
+    suspend fun deleteLogin() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
     }
 }
