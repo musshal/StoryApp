@@ -21,5 +21,5 @@ interface StoryDao {
     fun update(story: StoryEntity)
 
     @Query("SELECT * FROM stories")
-    fun getAllStories(): LiveData<ArrayList<StoryEntity>>
+    fun getAllStories(): LiveData<List<StoryEntity>>
 }
