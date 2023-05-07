@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.dicoding.storyapp.ui.home.HomeFragment
+import com.dicoding.storyapp.ui.insert.InsertFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,13 +13,14 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentManager = supportFragmentManager
         val homeFragment = HomeFragment()
-        val fragment = fragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)
+        val insertFragment = InsertFragment()
+        val fragment = fragmentManager.findFragmentByTag(InsertFragment::class.java.simpleName)
 
-        if (fragment !is HomeFragment) {
-            Log.d("StoryApp", "Fragment Name: " + HomeFragment::class.java.simpleName)
+        if (fragment !is InsertFragment) {
+            Log.d("StoryApp", "Fragment Name: " + InsertFragment::class.java.simpleName)
             fragmentManager
                 .beginTransaction()
-                .add(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
+                .add(R.id.frame_container, insertFragment, InsertFragment::class.java.simpleName)
                 .commit()
         }
     }
