@@ -10,15 +10,19 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.dicoding.storyapp.MainActivity
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.ui.camera.CameraActivity
+import com.dicoding.storyapp.ui.login.LoginFragment
+import com.dicoding.storyapp.ui.register.RegisterFragment
 import com.dicoding.storyapp.utils.reduceFileImage
 import com.dicoding.storyapp.utils.rotateFile
 import com.dicoding.storyapp.utils.uriToFile
@@ -104,6 +108,8 @@ class InsertActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityInsertBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.title = "Add New Story"
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -195,5 +201,16 @@ class InsertActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.option_menu_2, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_home -> {
+                startActivity(Intent(this, MainActivity::class.java))
+                true
+            }
+
+            else -> true
+        }
     }
 }

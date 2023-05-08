@@ -3,7 +3,7 @@
     <string name="upload">Upload</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-    <string name="insert">Insert</string>
+    <string name="insert">Add New Story</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="welcome_to_story_app">Welcome to Story App</string>
@@ -17,4 +17,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_up_to_create_an_account">Sign up to create an account</string>
+    <string name="home">Home</string>
+    <string name="description">Description</string>
 </resources>

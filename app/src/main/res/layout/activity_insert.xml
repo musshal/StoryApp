@@ -8,17 +8,20 @@
 
     <ImageView
         android:id="@+id/iv_story_image"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="240dp"
+        android:layout_margin="16dp"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/baseline_image_24" />
+        android:src="@drawable/baseline_image_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/ll_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/iv_story_image" >
 
@@ -43,15 +46,15 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="75dp"
         android:layout_marginEnd="75dp"
+        android:hint="@string/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_button"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:endIconMode="clear_text">
+        android:focusableInTouchMode="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edReview"
@@ -59,7 +62,8 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:imeOptions="actionSearch"
-            android:inputType="text"/>
+            android:lines="10"
+            android:gravity="top|start"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
