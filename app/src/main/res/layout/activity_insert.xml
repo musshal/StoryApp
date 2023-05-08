@@ -23,12 +23,14 @@
         app:layout_constraintTop_toBottomOf="@id/iv_story_image" >
 
         <Button
+            android:id="@+id/btn_camera_x"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:text="@string/camera"/>
 
         <Button
+            android:id="@+id/btn_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -62,6 +64,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/btn_upload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

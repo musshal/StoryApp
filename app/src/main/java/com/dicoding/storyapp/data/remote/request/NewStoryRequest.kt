@@ -5,6 +5,6 @@ import java.io.File
 data class NewStoryRequest(
     val description: String,
     val photo: File,
-    val lat: Float,
-    val lon: Float
+    val lat: Float? = null,
+    val lon: Float? = null,
 )

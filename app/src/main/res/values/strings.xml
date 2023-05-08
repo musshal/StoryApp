@@ -3,4 +3,7 @@
     <string name="upload">Upload</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="insert">Insert</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
 </resources>

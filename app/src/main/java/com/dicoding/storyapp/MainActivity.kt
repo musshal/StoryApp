@@ -1,27 +1,41 @@
 package com.dicoding.storyapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.dicoding.storyapp.ui.home.HomeFragment
-import com.dicoding.storyapp.ui.insert.InsertFragment
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toolbar
+import com.dicoding.storyapp.databinding.ActivityMainBinding
+import com.dicoding.storyapp.ui.camera.CameraActivity
+import com.dicoding.storyapp.ui.insert.InsertActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val fragmentManager = supportFragmentManager
-        val homeFragment = HomeFragment()
-        val insertFragment = InsertFragment()
-        val fragment = fragmentManager.findFragmentByTag(InsertFragment::class.java.simpleName)
+        supportActionBar?.elevation = 0f
+    }
 
-        if (fragment !is InsertFragment) {
-            Log.d("StoryApp", "Fragment Name: " + InsertFragment::class.java.simpleName)
-            fragmentManager
-                .beginTransaction()
-                .add(R.id.frame_container, insertFragment, InsertFragment::class.java.simpleName)
-                .commit()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.option_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_insert -> {
+                startActivity(Intent(this, InsertActivity::class.java))
+                true
+            }
+
+            else -> true
         }
     }
 }
