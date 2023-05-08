@@ -1,7 +1,5 @@
 package com.dicoding.storyapp.ui.insert
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,8 +44,8 @@ class InsertViewModel : ViewModel() {
                 requestImageFile
             )
 
-            val client = ApiConfig.getApiService().addNewStory(
-                NewStoryRequest("check", photo = file)
+            val client = ApiConfig.getApiService().addNewStoryGuest(
+                description, imageMultipart
             )
 
             client.enqueue(object : Callback<MessageResponse> {

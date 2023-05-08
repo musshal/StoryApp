@@ -47,102 +47,6 @@ class InsertActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
-                Toast.makeText(
-                    this,
-                    "Tidak mendapatkan permission.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
-        }
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityInsertBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        if (!allPermissionsGranted()) {
-            ActivityCompat.requestPermissions(
-                this,
-                REQUIRED_PERMISSIONS,
-                REQUEST_CODE_PERMISSIONS
-            )
-        }
-
-        viewModel = ViewModelProvider(this).get(InsertViewModel::class.java)
-
-        binding.btnCameraX.setOnClickListener { startCameraX() }
-        binding.btnGallery.setOnClickListener { startGallery() }
-        binding.btnUpload.setOnClickListener { uploadStory() }
-    }
-
-    private fun uploadStory() {
-
-        if (getFile != null) {
-            val file = reduceFileImage(getFile as File)
-            val description = "Ini adalah deskripsi gambar".toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                file.name,
-                requestImageFile
-            )
-
-            val client = ApiConfig.getApiService().addNewStory(
-                NewStoryRequest("check", photo = file)
-            )
-
-            client.enqueue(object : Callback<MessageResponse> {
-                override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
-                ) {
-                    val responseBody = response.body()
-
-                    if (responseBody != null) {
-                        Toast.makeText(this@InsertActivity, responseBody.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                    Toast.makeText(this@InsertActivity, t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-
-            binding.btnUpload.setOnClickListener {
-                uploadStory()
-            }
-        } else {
-            Toast.makeText(this@InsertActivity, "Silakan masukkan berkas gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun startCameraX() {
-        launcherIntentCamera.launch(Intent(this, CameraActivity::class.java))
-    }
-
-    private fun startGallery() {
-        val intent = Intent()
-        intent.action = ACTION_GET_CONTENT
-        intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
-        launcherIntentGallery.launch(chooser)
-    }
-
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -179,11 +83,103 @@ class InsertActivity : AppCompatActivity() {
         }
     }
 
-    private fun showSuccess(isLoading: Boolean) {
-        if (isLoading) {
-            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityInsertBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
+
+        viewModel = ViewModelProvider(this).get(InsertViewModel::class.java)
+
+        binding.btnCameraX.setOnClickListener { startCameraX() }
+        binding.btnGallery.setOnClickListener { startGallery() }
+        binding.btnUpload.setOnClickListener { uploadStory() }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun startCameraX() {
+        launcherIntentCamera.launch(Intent(this, CameraActivity::class.java))
+    }
+
+    private fun startGallery() {
+        val intent = Intent()
+        intent.action = ACTION_GET_CONTENT
+        intent.type = "image/*"
+        val chooser = Intent.createChooser(intent, "Choose a Picture")
+        launcherIntentGallery.launch(chooser)
+    }
+
+    private fun uploadStory() {
+
+        if (getFile != null) {
+            val file = reduceFileImage(getFile as File)
+            val description = "Ini adalah deskripsi gambar".toRequestBody("text/plain".toMediaType())
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                file.name,
+                requestImageFile
+            )
+
+            val client = ApiConfig.getApiService().addNewStoryGuest(
+                description, imageMultipart
+            )
+
+            client.enqueue(object : Callback<MessageResponse> {
+                override fun onResponse(
+                    call: Call<MessageResponse>,
+                    response: Response<MessageResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+
+                        if (responseBody != null) {
+                            Toast.makeText(this@InsertActivity, responseBody.message, Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Toast.makeText(this@InsertActivity, response.message(), Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                    Toast.makeText(this@InsertActivity, t.message, Toast.LENGTH_LONG).show()
+                }
+            })
+
+            binding.btnUpload.setOnClickListener {
+                uploadStory()
+            }
         } else {
-            Toast.makeText(this, "Gagal", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@InsertActivity, "Silakan masukkan berkas gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
         }
     }
 }
