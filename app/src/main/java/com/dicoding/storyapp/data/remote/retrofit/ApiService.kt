@@ -1,14 +1,12 @@
 package com.dicoding.storyapp.data.remote.retrofit
 
 import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.remote.request.RegisterRequest
 import com.dicoding.storyapp.data.remote.response.AllStoriesResponse
 import com.dicoding.storyapp.data.remote.response.DetailStoryResponse
 import com.dicoding.storyapp.data.remote.response.LoginResponse
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,13 +27,14 @@ interface ApiService {
     @POST("stories")
     fun addNewStory(
         @Header("Authorization") token: String,
-        @Body request: NewStoryRequest
+        @Part("description") description: String,
+        @Part photo: MultipartBody.Part
     ): Call<MessageResponse>
 
     @Multipart
     @POST("stories/guest")
-    fun addNewStoryGuest(
-        @Part("description") description: RequestBody,
+    fun addNewStory(
+        @Part("description") description: String,
         @Part photo: MultipartBody.Part
     ): Call<MessageResponse>
 

@@ -9,12 +9,12 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import com.dicoding.storyapp.data.remote.request.NewStoryRequest
+import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
@@ -36,8 +36,6 @@ class InsertActivity : AppCompatActivity() {
     private var getFile: File? = null
 
     private lateinit var binding: ActivityInsertBinding
-    private lateinit var currentPhotoPath: String
-    private lateinit var viewModel: InsertViewModel
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -115,8 +113,6 @@ class InsertActivity : AppCompatActivity() {
             )
         }
 
-        viewModel = ViewModelProvider(this).get(InsertViewModel::class.java)
-
         binding.btnCameraX.setOnClickListener { startCameraX() }
         binding.btnGallery.setOnClickListener { startGallery() }
         binding.btnUpload.setOnClickListener { uploadStory() }
@@ -142,7 +138,8 @@ class InsertActivity : AppCompatActivity() {
 
         if (getFile != null) {
             val file = reduceFileImage(getFile as File)
-            val description = "Ini adalah deskripsi gambar".toRequestBody("text/plain".toMediaType())
+            val description = "Ini adalah deskripsi gambar"
+                .toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
@@ -150,8 +147,8 @@ class InsertActivity : AppCompatActivity() {
                 requestImageFile
             )
 
-            val client = ApiConfig.getApiService().addNewStoryGuest(
-                description, imageMultipart
+            val client = ApiConfig.getApiService().addNewStory(
+                description.toString(), imageMultipart
             )
 
             client.enqueue(object : Callback<MessageResponse> {
@@ -163,10 +160,18 @@ class InsertActivity : AppCompatActivity() {
                         val responseBody = response.body()
 
                         if (responseBody != null) {
-                            Toast.makeText(this@InsertActivity, responseBody.message, Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this@InsertActivity,
+                                responseBody.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
-                        Toast.makeText(this@InsertActivity, response.message(), Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@InsertActivity,
+                            response.message(),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -179,7 +184,16 @@ class InsertActivity : AppCompatActivity() {
                 uploadStory()
             }
         } else {
-            Toast.makeText(this@InsertActivity, "Silakan masukkan berkas gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@InsertActivity,
+                "Silakan masukkan berkas gambar terlebih dahulu.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.option_menu_2, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }

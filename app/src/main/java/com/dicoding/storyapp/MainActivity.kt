@@ -1,14 +1,11 @@
 package com.dicoding.storyapp
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toolbar
+import android.util.Log
 import com.dicoding.storyapp.databinding.ActivityMainBinding
-import com.dicoding.storyapp.ui.camera.CameraActivity
-import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.home.HomeFragment
+import com.dicoding.storyapp.ui.login.LoginFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,23 +16,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.elevation = 0f
-    }
+        val fragmentManager = supportFragmentManager
+        val homeFragment = HomeFragment()
+        val loginFragment = LoginFragment()
+        val fragment = fragmentManager
+            .findFragmentByTag(LoginFragment::class.java.simpleName)
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.option_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_insert -> {
-                startActivity(Intent(this, InsertActivity::class.java))
-                true
-            }
-
-            else -> true
+        if (fragment !is LoginFragment) {
+            Log.d("StoryApp", "Fragment Name: " + LoginFragment::class.java.simpleName)
+            fragmentManager
+                .beginTransaction()
+                .add(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
+                .commit()
         }
     }
 }
