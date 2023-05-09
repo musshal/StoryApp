@@ -2,6 +2,7 @@ package com.dicoding.storyapp.ui.register
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,10 +10,17 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.remote.response.MessageResponse
+import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.login.LoginFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class RegisterFragment : Fragment() {
@@ -27,13 +35,68 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
 
+        setupAction()
+
         return binding.root
+    }
+
+    private fun setupAction() {
+        binding.btnSignUp.setOnClickListener {
+            val name = binding.edRegisterName.text.toString()
+            val email = binding.edRegisterEmail.text.toString()
+            val password = binding.edRegisterPassword.text.toString()
+
+            when {
+                name.isEmpty() -> {
+                    binding.edRegisterName.error = "Masukkan name"
+                }
+                email.isEmpty() -> {
+                    binding.edRegisterEmail.error = "Masukkan email"
+                }
+                password.isEmpty() -> {
+                    binding.edRegisterPassword.error = "Masukkan password"
+                }
+                else -> {
+                    val client = ApiConfig.getApiService().register(
+                        RegisterRequest(name, email, password)
+                    )
+                    client.enqueue(object : Callback<MessageResponse> {
+                        override fun onResponse(
+                            call: Call<MessageResponse>,
+                            response: Response<MessageResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                val responseBody = response.body()
+
+                                if (responseBody != null) {
+                                    Toast.makeText(
+                                        context,
+                                        responseBody.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    response.message(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                            Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                }
+            }
+        }
     }
 
     private fun moveToLoginFragment() {
