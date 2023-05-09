@@ -1,8 +1,10 @@
 package com.dicoding.storyapp.ui.register
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,6 +12,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.request.RegisterRequest
@@ -39,11 +43,43 @@ class RegisterFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
+        binding.edRegisterPassword.setOnEditorActionListener { _, actionId, _ ->
+            clearFocusOnDoneAction(actionId)
+        }
+
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+            toggleLoginPasswordVisibility(isChecked)
+        }
+
         binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
 
         setupAction()
 
         return binding.root
+    }
+
+    private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            binding.edRegisterPassword.clearFocus()
+            imm.hideSoftInputFromWindow(binding.edRegisterPassword.windowToken, 0)
+            return true
+        }
+
+        return false
+    }
+
+    private fun toggleLoginPasswordVisibility(isChecked: Boolean) {
+        val selection = binding.edRegisterPassword.selectionEnd
+
+        if (isChecked) {
+            binding.edRegisterPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        } else {
+            binding.edRegisterPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+
+        binding.edRegisterPassword.setSelection(selection)
     }
 
     private fun setupAction() {
