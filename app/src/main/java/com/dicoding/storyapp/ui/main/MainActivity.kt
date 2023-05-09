@@ -1,8 +1,9 @@
-package com.dicoding.storyapp
+package com.dicoding.storyapp.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityMainBinding
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.login.LoginFragment

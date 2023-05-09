@@ -15,14 +15,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.dicoding.storyapp.MainActivity
+import com.dicoding.storyapp.ui.main.MainActivity
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.ui.camera.CameraActivity
-import com.dicoding.storyapp.ui.login.LoginFragment
-import com.dicoding.storyapp.ui.register.RegisterFragment
 import com.dicoding.storyapp.utils.reduceFileImage
 import com.dicoding.storyapp.utils.rotateFile
 import com.dicoding.storyapp.utils.uriToFile

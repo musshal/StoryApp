@@ -19,4 +19,5 @@
     <string name="sign_up_to_create_an_account">Sign up to create an account</string>
     <string name="home">Home</string>
     <string name="description">Description</string>
+    <string name="show_password">Show password</string>
 </resources>
