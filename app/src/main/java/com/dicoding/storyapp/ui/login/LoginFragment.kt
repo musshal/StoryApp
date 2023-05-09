@@ -14,17 +14,26 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.local.entity.UserEntity
+import com.dicoding.storyapp.data.local.preferences.UserPreference
 import com.dicoding.storyapp.data.remote.request.LoginRequest
 import com.dicoding.storyapp.data.remote.response.LoginResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
+import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.register.RegisterFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class LoginFragment : Fragment() {
 
@@ -53,9 +62,17 @@ class LoginFragment : Fragment() {
 
         binding.tvSignUp.setOnClickListener { moveToRegisterFragment() }
 
+        setupViewModel()
         setupAction()
 
         return binding.root
+    }
+
+    private fun setupViewModel() {
+        val userPreference = UserPreference.getInstance(requireContext().dataStore)
+        val viewModelFactory = ViewModelFactory(userPreference)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
@@ -112,6 +129,12 @@ class LoginFragment : Fragment() {
                                         responseBody.message,
                                         Toast.LENGTH_SHORT
                                     ).show()
+
+                                    viewModel.setLogin(UserEntity(
+                                        responseBody.loginResult.userId,
+                                        responseBody.loginResult.name,
+                                        responseBody.loginResult.token
+                                    ))
 
                                     moveToHomeFragment()
                                 }
