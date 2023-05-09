@@ -3,7 +3,9 @@ package com.dicoding.storyapp.ui.register
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -42,8 +44,29 @@ class RegisterFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
-        binding.edRegisterPassword.setOnEditorActionListener { _, actionId, _ ->
-            clearFocusOnDoneAction(actionId)
+        binding.edRegisterPassword.apply {
+            setOnEditorActionListener { _, actionId, _ ->
+                clearFocusOnDoneAction(actionId)
+            }
+
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    error = if (s!!.length < 8) {
+                        "Password must be at least 8 character"
+                    } else {
+                        null
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
         }
 
         binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
@@ -62,6 +85,7 @@ class RegisterFragment : Fragment() {
 
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             binding.edRegisterPassword.clearFocus()
+            binding.edRegisterPassword.error = null
             imm.hideSoftInputFromWindow(binding.edRegisterPassword.windowToken, 0)
             return true
         }
@@ -96,6 +120,9 @@ class RegisterFragment : Fragment() {
                 }
                 password.isEmpty() -> {
                     binding.edRegisterPassword.error = "Masukkan password"
+                }
+                password.length < 8 -> {
+                    binding.edRegisterPassword.error = "Password must be at least 8 character"
                 }
                 else -> {
                     val client = ApiConfig.getApiService().register(
