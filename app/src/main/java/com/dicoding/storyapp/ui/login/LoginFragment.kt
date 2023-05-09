@@ -138,7 +138,6 @@ class LoginFragment : Fragment() {
         val fragmentManager = parentFragmentManager
         fragmentManager.beginTransaction().apply {
             replace(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
-
             commit()
         }
     }
@@ -148,6 +147,7 @@ class LoginFragment : Fragment() {
         val fragmentManager = parentFragmentManager
         fragmentManager.beginTransaction().apply {
             replace(R.id.frame_container, registerFragment, RegisterFragment::class.java.simpleName)
+            addToBackStack(null)
             commit()
         }
     }
