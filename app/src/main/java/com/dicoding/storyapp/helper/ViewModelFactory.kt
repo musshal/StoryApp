@@ -6,7 +6,6 @@ import com.dicoding.storyapp.data.local.preferences.UserPreference
 import com.dicoding.storyapp.ui.home.HomeViewModel
 import com.dicoding.storyapp.ui.login.LoginViewModel
 import com.dicoding.storyapp.ui.main.MainViewModel
-import com.dicoding.storyapp.ui.register.RegisterViewModel
 
 class ViewModelFactory(private val preferences: UserPreference) : ViewModelProvider.NewInstanceFactory() {
 
