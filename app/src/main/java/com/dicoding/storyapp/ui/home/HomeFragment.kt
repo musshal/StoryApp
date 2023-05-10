@@ -20,7 +20,9 @@ import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.main.MainActivity
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "user_preference"
+)
 
 class HomeFragment : Fragment() {
 
@@ -40,6 +42,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         setupViewModel()
+
         return binding.root
     }
 

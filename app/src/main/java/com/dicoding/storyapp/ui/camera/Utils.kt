@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.utils
+package com.dicoding.storyapp.ui.camera
 
 import android.app.Application
 import android.content.ContentResolver

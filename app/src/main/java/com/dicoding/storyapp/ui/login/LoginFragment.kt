@@ -19,21 +19,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.local.preferences.UserPreference
-import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.response.LoginResponse
-import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.register.RegisterFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "user_preference"
+)
 
 class LoginFragment : Fragment() {
 
@@ -51,16 +46,6 @@ class LoginFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
-
-        binding.edLoginPassword.setOnEditorActionListener { _, actionId, _ ->
-            clearFocusOnDoneAction(actionId)
-        }
-
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            toggleLoginPasswordVisibility(isChecked)
-        }
-
-        binding.tvSignUp.setOnClickListener { moveToRegisterFragment() }
 
         setupViewModel()
         setupAction()
@@ -108,6 +93,35 @@ class LoginFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
     }
 
+    private fun setupAction() {
+        binding.edLoginPassword.setOnEditorActionListener { _, actionId, _ ->
+            clearFocusOnDoneAction(actionId)
+        }
+
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+            toggleLoginPasswordVisibility(isChecked)
+        }
+
+        binding.tvSignUp.setOnClickListener { moveToRegisterFragment() }
+
+        binding.btnSignIn.setOnClickListener {
+            val email = binding.edLoginEmail.text.toString()
+            val password = binding.edLoginPassword.text.toString()
+
+            when {
+                email.isEmpty() -> {
+                    binding.edLoginEmail.error = "Masukkan email"
+                }
+                password.isEmpty() -> {
+                    binding.edLoginPassword.error = "Masukkan password"
+                }
+                else -> {
+                    viewModel.login(email, password)
+                }
+            }
+        }
+    }
+
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -130,25 +144,6 @@ class LoginFragment : Fragment() {
         }
 
         binding.edLoginPassword.setSelection(selection)
-    }
-
-    private fun setupAction() {
-        binding.btnSignIn.setOnClickListener {
-            val email = binding.edLoginEmail.text.toString()
-            val password = binding.edLoginPassword.text.toString()
-
-            when {
-                email.isEmpty() -> {
-                    binding.edLoginEmail.error = "Masukkan email"
-                }
-                password.isEmpty() -> {
-                    binding.edLoginPassword.error = "Masukkan password"
-                }
-                else -> {
-                    viewModel.login(email, password)
-                }
-            }
-        }
     }
 
     private fun replaceToHomeFragment() {

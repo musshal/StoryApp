@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.storyapp.data.local.preferences.UserPreference
 import com.dicoding.storyapp.data.remote.request.RegisterRequest
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
@@ -12,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel(private val preferences: UserPreference) : ViewModel() {
+class RegisterViewModel() : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -24,7 +23,7 @@ class RegisterViewModel(private val preferences: UserPreference) : ViewModel() {
     val isError: LiveData<Boolean> = _isError
 
     companion object {
-        private val TAG = "RegisterViewModel"
+        private const val TAG = "RegisterViewModel"
     }
 
     fun register(name: String, email: String, password: String) {

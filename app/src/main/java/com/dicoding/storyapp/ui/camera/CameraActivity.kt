@@ -15,7 +15,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.dicoding.storyapp.databinding.ActivityCameraBinding
 import com.dicoding.storyapp.ui.insert.InsertActivity
-import com.dicoding.storyapp.utils.createFile
 import java.lang.Exception
 
 class CameraActivity : AppCompatActivity() {
@@ -30,6 +29,16 @@ class CameraActivity : AppCompatActivity() {
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupAction()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        hideSystemUI()
+        startCamera()
+    }
+
+    private fun setupAction() {
         binding.captureImage.setOnClickListener { takePhoto() }
         binding.switchCamera.setOnClickListener {
             cameraSelector =
@@ -41,16 +50,13 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onResume() {
-        super.onResume()
-        hideSystemUI()
-        startCamera()
-    }
-
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
         val photoFile = createFile(application)
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        val outputOptions = ImageCapture
+            .OutputFileOptions
+            .Builder(photoFile)
+            .build()
 
         imageCapture.takePicture(
             outputOptions,
@@ -59,7 +65,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
                         this@CameraActivity,
-                        "Gagal mengambil gambar.",
+                        "Failed to capture an image.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -79,7 +85,8 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider
+            .getInstance(this)
 
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -102,7 +109,7 @@ class CameraActivity : AppCompatActivity() {
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@CameraActivity,
-                    "Gagal memunculkan kamera.",
+                    "Failed to open camera",
                     Toast.LENGTH_SHORT
                 ).show()
             }

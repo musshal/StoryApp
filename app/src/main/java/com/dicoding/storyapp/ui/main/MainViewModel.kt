@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.local.preferences.UserPreference
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val preferences: UserPreference) : ViewModel() {
@@ -20,7 +19,8 @@ class MainViewModel(private val preferences: UserPreference) : ViewModel() {
     private fun getLogin() {
         viewModelScope.launch {
             preferences.getLogin().collect { user ->
-                _isLoggedIn.value = user.userId.isNotEmpty() && user.name.isNotEmpty() && user.token.isNotEmpty()
+                _isLoggedIn.value =
+                    user.userId.isNotEmpty() && user.name.isNotEmpty() && user.token.isNotEmpty()
             }
         }
     }

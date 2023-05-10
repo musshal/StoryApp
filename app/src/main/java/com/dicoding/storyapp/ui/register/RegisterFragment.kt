@@ -16,18 +16,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.preferences.UserPreference
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
-import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.login.LoginFragment
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 class RegisterFragment : Fragment() {
 
@@ -44,14 +37,6 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
-
-        edRegisterPasswordBehavior()
-
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            toggleLoginPasswordVisibility(isChecked)
-        }
-
-        binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
 
         setupViewModel()
         setupAction()
@@ -93,10 +78,41 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val userPreference = UserPreference.getInstance(requireContext().dataStore)
-        val viewModelFactory = ViewModelFactory(userPreference)
+        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+    }
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[RegisterViewModel::class.java]
+    private fun setupAction() {
+        edRegisterPasswordBehavior()
+
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+            toggleLoginPasswordVisibility(isChecked)
+        }
+
+        binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
+
+        binding.btnSignUp.setOnClickListener {
+            val name = binding.edRegisterName.text.toString()
+            val email = binding.edRegisterEmail.text.toString()
+            val password = binding.edRegisterPassword.text.toString()
+
+            when {
+                name.isEmpty() -> {
+                    binding.edRegisterName.error = "Masukkan name"
+                }
+                email.isEmpty() -> {
+                    binding.edRegisterEmail.error = "Masukkan email"
+                }
+                password.isEmpty() -> {
+                    binding.edRegisterPassword.error = "Masukkan password"
+                }
+                password.length < 8 -> {
+                    binding.edRegisterPassword.error = "Password must be at least 8 character"
+                }
+                else -> {
+                    viewModel.register(name, email, password)
+                }
+            }
+        }
     }
 
     private fun edRegisterPasswordBehavior() {
@@ -149,32 +165,6 @@ class RegisterFragment : Fragment() {
         }
 
         binding.edRegisterPassword.setSelection(selection)
-    }
-
-    private fun setupAction() {
-        binding.btnSignUp.setOnClickListener {
-            val name = binding.edRegisterName.text.toString()
-            val email = binding.edRegisterEmail.text.toString()
-            val password = binding.edRegisterPassword.text.toString()
-
-            when {
-                name.isEmpty() -> {
-                    binding.edRegisterName.error = "Masukkan name"
-                }
-                email.isEmpty() -> {
-                    binding.edRegisterEmail.error = "Masukkan email"
-                }
-                password.isEmpty() -> {
-                    binding.edRegisterPassword.error = "Masukkan password"
-                }
-                password.length < 8 -> {
-                    binding.edRegisterPassword.error = "Password must be at least 8 character"
-                }
-                else -> {
-                    viewModel.register(name, email, password)
-                }
-            }
-        }
     }
 
     private fun replaceToLoginFragment() {

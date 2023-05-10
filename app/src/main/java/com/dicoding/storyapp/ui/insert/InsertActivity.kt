@@ -19,20 +19,15 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.ui.main.MainActivity
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.remote.response.MessageResponse
-import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.ui.camera.CameraActivity
-import com.dicoding.storyapp.utils.reduceFileImage
-import com.dicoding.storyapp.utils.rotateFile
-import com.dicoding.storyapp.utils.uriToFile
+import com.dicoding.storyapp.ui.camera.reduceFileImage
+import com.dicoding.storyapp.ui.camera.rotateFile
+import com.dicoding.storyapp.ui.camera.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {

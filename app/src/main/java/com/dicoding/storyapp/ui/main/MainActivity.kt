@@ -15,7 +15,9 @@ import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.login.LoginFragment
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "user_preference"
+)
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,45 +34,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(dataStore)))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(UserPreference.getInstance(dataStore))
+        )[MainViewModel::class.java]
     }
 
     private fun setupFragment() {
         viewModel.isLoggedIn.observe(this) { isLoggedIn ->
-            val fragmentManager = supportFragmentManager
             if (isLoggedIn) {
-                val homeFragment = HomeFragment()
-                val fragment = fragmentManager
-                    .findFragmentByTag(HomeFragment::class.java.simpleName)
-
-                if (fragment !is LoginFragment) {
-                    Log.d("StoryApp", "Fragment Name: " + HomeFragment::class.java.simpleName)
-                    fragmentManager
-                        .beginTransaction()
-                        .add(
-                            R.id.frame_container,
-                            homeFragment,
-                            HomeFragment::class.java.simpleName
-                        )
-                        .commit()
-                }
+                addToHomeFragment()
             } else {
-                val loginFragment = LoginFragment()
-                val fragment = fragmentManager
-                    .findFragmentByTag(LoginFragment::class.java.simpleName)
-
-                if (fragment !is LoginFragment) {
-                    Log.d("StoryApp", "Fragment Name: " + LoginFragment::class.java.simpleName)
-                    fragmentManager
-                        .beginTransaction()
-                        .add(
-                            R.id.frame_container,
-                            loginFragment,
-                            LoginFragment::class.java.simpleName
-                        )
-                        .commit()
+                addToLoginFragment()
                 }
             }
+        }
+
+    private fun addToLoginFragment() {
+        val fragmentManager = supportFragmentManager
+        val loginFragment = LoginFragment()
+        val fragment = fragmentManager.findFragmentByTag(
+            LoginFragment::class.java.simpleName
+        )
+
+        if (fragment !is LoginFragment) {
+            Log.d("StoryApp", "Fragment Name: " + LoginFragment::class.java.simpleName)
+            fragmentManager
+                .beginTransaction()
+                .add(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
+                .commit()
+    }
+}
+
+    private fun addToHomeFragment() {
+        val fragmentManager = supportFragmentManager
+        val homeFragment = HomeFragment()
+        val fragment = fragmentManager.findFragmentByTag(
+            HomeFragment::class.java.simpleName
+        )
+
+        if (fragment !is LoginFragment) {
+            Log.d("StoryApp", "Fragment Name: " + HomeFragment::class.java.simpleName)
+            fragmentManager
+                .beginTransaction()
+                .add(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
+                .commit()
         }
     }
 }
