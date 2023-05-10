@@ -33,7 +33,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 class LoginFragment : Fragment() {
 
@@ -64,8 +64,41 @@ class LoginFragment : Fragment() {
 
         setupViewModel()
         setupAction()
+        initObserver()
 
         return binding.root
+    }
+
+    private fun initObserver() {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
+
+        viewModel.isSuccess.observe(viewLifecycleOwner) {
+            showSuccessMessage(it)
+        }
+
+        viewModel.isError.observe(viewLifecycleOwner) {
+            showErrorMessage(it)
+        }
+    }
+
+    private fun showErrorMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(context, "Failed to sign in", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showSuccessMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
+
+            replaceToHomeFragment()
+        }
+    }
+
+    private fun showLoading(it: Boolean?) {
+        binding.progressBar.visibility = if (it == true) View.VISIBLE else View.GONE
     }
 
     private fun setupViewModel() {
@@ -112,51 +145,13 @@ class LoginFragment : Fragment() {
                     binding.edLoginPassword.error = "Masukkan password"
                 }
                 else -> {
-                    val client = ApiConfig.getApiService().login(
-                        LoginRequest(email, password)
-                    )
-                    client.enqueue(object : Callback<LoginResponse> {
-                        override fun onResponse(
-                            call: Call<LoginResponse>,
-                            response: Response<LoginResponse>
-                        ) {
-                            if (response.isSuccessful) {
-                                val responseBody = response.body()
-
-                                if (responseBody != null) {
-                                    Toast.makeText(
-                                        context,
-                                        responseBody.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-                                    viewModel.setLogin(UserEntity(
-                                        responseBody.loginResult.userId,
-                                        responseBody.loginResult.name,
-                                        responseBody.loginResult.token
-                                    ))
-
-                                    moveToHomeFragment()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    response.message(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                            Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                        }
-                    })
+                    viewModel.login(email, password)
                 }
             }
         }
     }
 
-    private fun moveToHomeFragment() {
+    private fun replaceToHomeFragment() {
         val homeFragment = HomeFragment()
         val fragmentManager = parentFragmentManager
         fragmentManager.beginTransaction().apply {

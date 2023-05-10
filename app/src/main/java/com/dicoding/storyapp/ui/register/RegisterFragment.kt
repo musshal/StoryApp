@@ -16,21 +16,23 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.remote.request.RegisterRequest
-import com.dicoding.storyapp.data.remote.response.MessageResponse
-import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
+import com.dicoding.storyapp.data.local.preferences.UserPreference
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
+import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.login.LoginFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
+    private lateinit var viewModel: RegisterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +43,63 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
+        edRegisterPasswordBehavior()
+
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+            toggleLoginPasswordVisibility(isChecked)
+        }
+
+        binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
+
+        setupViewModel()
+        setupAction()
+        initObserver()
+
+        return binding.root
+    }
+
+    private fun initObserver() {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
+
+        viewModel.isSuccess.observe(viewLifecycleOwner) {
+            showSuccessMessage(it)
+        }
+
+        viewModel.isError.observe(viewLifecycleOwner) {
+            showErrorMessage(it)
+        }
+    }
+
+    private fun showErrorMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(context, "Failed to create an account", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showSuccessMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(context, "Success create an account", Toast.LENGTH_SHORT).show()
+
+            replaceToLoginFragment()
+        }
+    }
+
+    private fun showLoading(it: Boolean?) {
+        binding.progressBar.visibility = if (it == true) View.VISIBLE else View.GONE
+    }
+
+    private fun setupViewModel() {
+        val userPreference = UserPreference.getInstance(requireContext().dataStore)
+        val viewModelFactory = ViewModelFactory(userPreference)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[RegisterViewModel::class.java]
+    }
+
+    private fun edRegisterPasswordBehavior() {
         binding.edRegisterPassword.apply {
             setOnEditorActionListener { _, actionId, _ ->
                 clearFocusOnDoneAction(actionId)
@@ -68,16 +124,6 @@ class RegisterFragment : Fragment() {
                 override fun afterTextChanged(s: Editable?) {}
             })
         }
-
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            toggleLoginPasswordVisibility(isChecked)
-        }
-
-        binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
-
-        setupAction()
-
-        return binding.root
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
@@ -125,39 +171,18 @@ class RegisterFragment : Fragment() {
                     binding.edRegisterPassword.error = "Password must be at least 8 character"
                 }
                 else -> {
-                    val client = ApiConfig.getApiService().register(
-                        RegisterRequest(name, email, password)
-                    )
-                    client.enqueue(object : Callback<MessageResponse> {
-                        override fun onResponse(
-                            call: Call<MessageResponse>,
-                            response: Response<MessageResponse>
-                        ) {
-                            if (response.isSuccessful) {
-                                val responseBody = response.body()
-
-                                if (responseBody != null) {
-                                    Toast.makeText(
-                                        context,
-                                        responseBody.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    response.message(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                            Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                        }
-                    })
+                    viewModel.register(name, email, password)
                 }
             }
+        }
+    }
+
+    private fun replaceToLoginFragment() {
+        val loginFragment = LoginFragment()
+        val fragmentManager = parentFragmentManager
+        fragmentManager.beginTransaction().apply {
+            replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
+            commit()
         }
     }
 

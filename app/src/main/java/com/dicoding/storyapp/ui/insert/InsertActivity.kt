@@ -11,10 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.ui.main.MainActivity
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.response.MessageResponse
@@ -38,6 +40,7 @@ class InsertActivity : AppCompatActivity() {
     private var getFile: File? = null
 
     private lateinit var binding: ActivityInsertBinding
+    private lateinit var viewModel: InsertViewModel
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -117,9 +120,49 @@ class InsertActivity : AppCompatActivity() {
             )
         }
 
+        setupViewModel()
+        setupAction()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.isLoading.observe(this) {
+            showLoading(it)
+        }
+
+        viewModel.isSuccess.observe(this) {
+            showSuccessMessage(it)
+        }
+
+        viewModel.isError.observe(this) {
+            showErrorMessage(it)
+        }
+    }
+
+    private fun showErrorMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(this, "Failed to add new story", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showSuccessMessage(it: Boolean?) {
+        if (it == true) {
+            Toast.makeText(this, "Add new story success", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showLoading(it: Boolean?) {
+        binding.progressBar.visibility = if (it == true) View.VISIBLE else View.GONE
+    }
+
+    private fun setupAction() {
         binding.btnCameraX.setOnClickListener { startCameraX() }
         binding.btnGallery.setOnClickListener { startGallery() }
         binding.btnUpload.setOnClickListener { uploadStory() }
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(this)[InsertViewModel::class.java]
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -151,38 +194,7 @@ class InsertActivity : AppCompatActivity() {
                 requestImageFile
             )
 
-            val client = ApiConfig.getApiService().addNewStory(
-                description.toString(), imageMultipart
-            )
-
-            client.enqueue(object : Callback<MessageResponse> {
-                override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-
-                        if (responseBody != null) {
-                            Toast.makeText(
-                                this@InsertActivity,
-                                responseBody.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        Toast.makeText(
-                            this@InsertActivity,
-                            response.message(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                    Toast.makeText(this@InsertActivity, t.message, Toast.LENGTH_LONG).show()
-                }
-            })
+            viewModel.addNewStory(description.toString(), imageMultipart)
 
             binding.btnUpload.setOnClickListener {
                 uploadStory()

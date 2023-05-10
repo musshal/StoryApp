@@ -15,7 +15,7 @@ import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.login.LoginFragment
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 class MainActivity : AppCompatActivity() {
 
