@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
 import com.dicoding.storyapp.ui.insert.InsertActivity
-import com.dicoding.storyapp.ui.login.LoginFragment
 
 class RegisterFragment : Fragment() {
 
@@ -69,7 +68,7 @@ class RegisterFragment : Fragment() {
         if (it == true) {
             Toast.makeText(context, "Success create an account", Toast.LENGTH_SHORT).show()
 
-            replaceToLoginFragment()
+            moveToLoginFragment()
         }
     }
 
@@ -165,25 +164,12 @@ class RegisterFragment : Fragment() {
         }
 
         binding.edRegisterPassword.setSelection(selection)
-    }
-
-    private fun replaceToLoginFragment() {
-        val loginFragment = LoginFragment()
-        val fragmentManager = parentFragmentManager
-        fragmentManager.beginTransaction().apply {
-            replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
-            commit()
-        }
+        binding.edRegisterPassword.error = null
     }
 
     private fun moveToLoginFragment() {
-        val loginFragment = LoginFragment()
         val fragmentManager = parentFragmentManager
-        fragmentManager.beginTransaction().apply {
-            replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
-            addToBackStack(null)
-            commit()
-        }
+        fragmentManager.popBackStack()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

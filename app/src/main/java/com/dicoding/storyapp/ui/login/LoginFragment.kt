@@ -176,16 +176,6 @@ class LoginFragment : Fragment() {
                 startActivity(Intent(context, InsertActivity::class.java))
                 true
             }
-            R.id.menu_logout -> {
-                val registerFragment = RegisterFragment()
-                val fragmentManager = parentFragmentManager
-                fragmentManager.beginTransaction().apply {
-                    replace(R.id.frame_container, registerFragment, RegisterFragment::class.java.simpleName)
-                    addToBackStack(null)
-                    commit()
-                }
-                true
-            }
             else -> true
         }
     }
