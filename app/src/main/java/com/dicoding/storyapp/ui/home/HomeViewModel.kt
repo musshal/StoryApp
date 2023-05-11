@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.local.preferences.UserPreference
@@ -11,6 +12,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class HomeViewModel(private val preference: UserPreference) : ViewModel() {
+
+    companion object {
+        private val TAG = "HomeViewModel"
+    }
 
     private fun getAllStories() {
         viewModelScope.launch {
@@ -24,11 +29,15 @@ class HomeViewModel(private val preference: UserPreference) : ViewModel() {
                         call: Call<AllStoriesResponse>,
                         response: Response<AllStoriesResponse>
                     ) {
-                        TODO("Not yet implemented")
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                        } else {
+                            Log.e(TAG, "OnFailure: ${response.message()}")
+                        }
                     }
 
                     override fun onFailure(call: Call<AllStoriesResponse>, t: Throwable) {
-                        TODO("Not yet implemented")
+                        Log.e(TAG, "OnFailure: ${t.message}")
                     }
                 })
             }

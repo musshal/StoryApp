@@ -9,25 +9,20 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.dicoding.storyapp.ui.main.MainActivity
-import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.ui.camera.CameraActivity
-import com.dicoding.storyapp.ui.camera.reduceFileImage
-import com.dicoding.storyapp.ui.camera.rotateFile
-import com.dicoding.storyapp.ui.camera.uriToFile
+import com.dicoding.storyapp.helper.reduceFileImage
+import com.dicoding.storyapp.helper.rotateFile
+import com.dicoding.storyapp.helper.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {
@@ -92,7 +87,7 @@ class InsertActivity : AppCompatActivity() {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
                     this,
-                    "Tidak mendapatkan permission.",
+                    "Don't have permission.",
                     Toast.LENGTH_SHORT
                 ).show()
                 finish()
@@ -177,45 +172,34 @@ class InsertActivity : AppCompatActivity() {
     }
 
     private fun uploadStory() {
+        val description = binding.edStoryDescription.text.toString()
 
-        if (getFile != null) {
-            val file = reduceFileImage(getFile as File)
-            val description = "Ini adalah deskripsi gambar"
-                .toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                file.name,
-                requestImageFile
-            )
-
-            viewModel.addNewStory(description.toString(), imageMultipart)
-
-            binding.btnUpload.setOnClickListener {
-                uploadStory()
+        when {
+            getFile == null -> {
+                Toast.makeText(
+                    this@InsertActivity,
+                    "Please insert the image file first",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Toast.makeText(
-                this@InsertActivity,
-                "Silakan masukkan berkas gambar terlebih dahulu.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.option_menu_2, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_home -> {
-                startActivity(Intent(this, MainActivity::class.java))
-                true
+            description.isEmpty() -> {
+                Toast.makeText(
+                    this@InsertActivity,
+                    "Please fill the image description first",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+            else -> {
+                val file = reduceFileImage(getFile as File)
+                val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                    "photo",
+                    file.name,
+                    requestImageFile
+                )
 
-            else -> true
+                viewModel.addNewStory(description, imageMultipart)
+            }
         }
     }
 }

@@ -12,11 +12,7 @@ class MainViewModel(private val preferences: UserPreference) : ViewModel() {
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> = _isLoggedIn
 
-    init {
-        getLogin()
-    }
-
-    private fun getLogin() {
+    fun getLogin() {
         viewModelScope.launch {
             preferences.getLogin().collect { user ->
                 _isLoggedIn.value =

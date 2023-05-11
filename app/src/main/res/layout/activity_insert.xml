@@ -57,7 +57,7 @@
         android:focusableInTouchMode="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edReview"
+            android:id="@+id/ed_story_description"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="10"

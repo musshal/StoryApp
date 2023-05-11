@@ -142,7 +142,9 @@ class RegisterFragment : Fragment() {
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = requireContext().getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
 
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             binding.edRegisterPassword.clearFocus()
@@ -158,9 +160,11 @@ class RegisterFragment : Fragment() {
         val selection = binding.edRegisterPassword.selectionEnd
 
         if (isChecked) {
-            binding.edRegisterPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.edRegisterPassword.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         } else {
-            binding.edRegisterPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.edRegisterPassword.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
 
         binding.edRegisterPassword.setSelection(selection)
@@ -183,7 +187,6 @@ class RegisterFragment : Fragment() {
                 startActivity(Intent(context, InsertActivity::class.java))
                 true
             }
-
             else -> true
         }
     }

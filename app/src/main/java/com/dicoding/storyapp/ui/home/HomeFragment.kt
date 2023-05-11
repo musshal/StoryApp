@@ -38,7 +38,6 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         setupViewModel()

@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.insert
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,6 +22,10 @@ class InsertViewModel : ViewModel() {
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
+    companion object {
+        private val TAG = "InsertViewModel"
+    }
+
     fun addNewStory(description: String, photo: MultipartBody.Part) {
         _isLoading.value = true
         _isSuccess.value = false
@@ -41,12 +46,16 @@ class InsertViewModel : ViewModel() {
                         _isSuccess.value = true
                     }
                 } else {
+                    Log.e(TAG, "OnFailure: ${response.message()}")
+
                     _isLoading.value = false
                     _isError.value = true
                 }
             }
 
             override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                Log.e(TAG, "OnFailure: ${t.message}")
+
                 _isLoading.value = false
                 _isError.value = true
             }

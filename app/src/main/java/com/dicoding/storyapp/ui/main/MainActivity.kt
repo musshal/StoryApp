@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFragment() {
+        viewModel.getLogin()
         viewModel.isLoggedIn.observe(this) { isLoggedIn ->
             if (isLoggedIn) {
                 addToHomeFragment()

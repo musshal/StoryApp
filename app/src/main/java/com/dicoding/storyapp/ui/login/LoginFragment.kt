@@ -44,7 +44,6 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         setupViewModel()
@@ -110,10 +109,10 @@ class LoginFragment : Fragment() {
 
             when {
                 email.isEmpty() -> {
-                    binding.edLoginEmail.error = "Masukkan email"
+                    binding.edLoginEmail.error = "Fill the email"
                 }
                 password.isEmpty() -> {
-                    binding.edLoginPassword.error = "Masukkan password"
+                    binding.edLoginPassword.error = "Fill the password"
                 }
                 else -> {
                     viewModel.login(email, password)
@@ -123,7 +122,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = requireContext().getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
 
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             binding.edLoginPassword.clearFocus()
@@ -138,9 +139,11 @@ class LoginFragment : Fragment() {
         val selection = binding.edLoginPassword.selectionEnd
 
         if (isChecked) {
-            binding.edLoginPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.edLoginPassword.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         } else {
-            binding.edLoginPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.edLoginPassword.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
 
         binding.edLoginPassword.setSelection(selection)

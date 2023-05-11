@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,21 +49,23 @@ class   LoginViewModel(private val preferences: UserPreference) : ViewModel() {
                         _isLoading.value = false
                         _isSuccess.value = true
 
-                        val userEntity = UserEntity(
-                            responseBody.loginResult.userId,
-                            responseBody.loginResult.name,
-                            responseBody.loginResult.token
-                        )
-
-                        setLogin(userEntity)
+                        setLogin(UserEntity(
+                                responseBody.loginResult.userId,
+                                responseBody.loginResult.name,
+                                responseBody.loginResult.token
+                        ))
                     }
                 } else {
+                    Log.e(TAG, "OnFailure: ${response.message()}")
+
                     _isLoading.value = false
                     _isError.value = true
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Log.e(TAG, "OnFailure: ${t.message}")
+
                 _isLoading.value = false
                 _isError.value = true
             }
