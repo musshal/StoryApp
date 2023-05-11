@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
                 addToHomeFragment()
             } else {
                 addToLoginFragment()
-                }
             }
         }
+    }
 
     private fun addToLoginFragment() {
         val fragmentManager = supportFragmentManager
