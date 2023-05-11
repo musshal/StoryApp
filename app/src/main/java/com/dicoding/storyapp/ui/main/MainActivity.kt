@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             HomeFragment::class.java.simpleName
         )
 
-        if (fragment !is LoginFragment) {
+        if (fragment !is HomeFragment) {
             Log.d("StoryApp", "Fragment Name: " + HomeFragment::class.java.simpleName)
             fragmentManager
                 .beginTransaction()
