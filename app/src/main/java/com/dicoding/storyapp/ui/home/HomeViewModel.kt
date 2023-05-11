@@ -17,7 +17,7 @@ class HomeViewModel(private val preference: UserPreference) : ViewModel() {
             preference.getLogin().collect { user ->
                 val token = "Bearer ${user.token}"
                 val client = ApiConfig.getApiService().getAllStories(
-                    token, 1, 20, true
+                    token, 1, 20
                 )
                 client.enqueue(object : Callback<AllStoriesResponse> {
                     override fun onResponse(
