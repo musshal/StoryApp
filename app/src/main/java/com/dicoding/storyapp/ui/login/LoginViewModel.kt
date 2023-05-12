@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.local.entity.UserEntity
-import com.dicoding.storyapp.data.local.preferences.UserPreference
+import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.data.remote.request.LoginRequest
 import com.dicoding.storyapp.data.remote.response.LoginResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
@@ -15,7 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class   LoginViewModel(private val preferences: UserPreference) : ViewModel() {
+class   LoginViewModel(private val preferences: UserPreferences) : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

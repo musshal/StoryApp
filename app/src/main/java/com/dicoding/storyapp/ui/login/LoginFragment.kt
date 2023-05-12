@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -17,17 +16,19 @@ import android.widget.Toast
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.preferences.UserPreference
+import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeFragment
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.main.MainViewModel
 import com.dicoding.storyapp.ui.register.RegisterFragment
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "user_preference"
+    name = "user_preferences"
 )
 
 class LoginFragment : Fragment() {
@@ -86,10 +87,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val userPreference = UserPreference.getInstance(requireContext().dataStore)
-        val viewModelFactory = ViewModelFactory(userPreference)
+        val preferences = UserPreferences.getInstance(requireContext().dataStore)
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelFactory(preferences))[LoginViewModel::class.java]
     }
 
     private fun setupAction() {

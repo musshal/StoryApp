@@ -3,7 +3,7 @@ package com.dicoding.storyapp.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dicoding.storyapp.data.local.preferences.UserPreference
+import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.data.remote.response.AllStoriesResponse
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeViewModel(private val preference: UserPreference) : ViewModel() {
+class HomeViewModel(private val preference: UserPreferences) : ViewModel() {
 
     companion object {
         private val TAG = "HomeViewModel"
