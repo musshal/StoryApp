@@ -2,6 +2,7 @@ package com.dicoding.storyapp.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -37,6 +38,16 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         setupViewModel()
+        setupData()
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            myUpdateOperation()
+        }
+
+        return binding.root
+    }
+
+    private fun setupData() {
         viewModel.getLogin().observe(viewLifecycleOwner) { user ->
             if (user.token.isNotBlank()) {
                 viewModel.getAllStories(user.token).observe(viewLifecycleOwner) { result ->
@@ -58,8 +69,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun setupViewModel() {
@@ -86,6 +96,10 @@ class HomeFragment : Fragment() {
             }
             else -> true
         }
+    }
+
+    private fun myUpdateOperation() {
+        setupData()
     }
 
     private fun showLogoutDialog() {
