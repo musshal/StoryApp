@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.ui.home
+package com.dicoding.storyapp.ui.main
 
 import android.content.Context
 import android.content.Intent
@@ -18,16 +18,15 @@ import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.main.MainActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "user_preference"
+    name = "user_preferences"
 )
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,10 @@ class HomeFragment : Fragment() {
     private fun setupViewModel() {
         val userPreferences = UserPreferences.getInstance(requireContext().dataStore)
 
-        viewModel = ViewModelProvider(this, ViewModelFactory(userPreferences))[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(userPreferences)
+        )[MainViewModel::class.java]
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

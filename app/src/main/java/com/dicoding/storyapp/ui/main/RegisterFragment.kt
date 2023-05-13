@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.ui.register
+package com.dicoding.storyapp.ui.main
 
 import android.content.Context
 import android.content.Intent
@@ -24,7 +24,7 @@ import com.dicoding.storyapp.ui.insert.InsertActivity
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
-    private lateinit var viewModel: RegisterViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,35 +49,29 @@ class RegisterFragment : Fragment() {
             showLoading(it)
         }
 
-        viewModel.isSuccess.observe(viewLifecycleOwner) {
-            showSuccessMessage(it)
-        }
-
         viewModel.isError.observe(viewLifecycleOwner) {
-            showErrorMessage(it)
+            if (it != null) {
+                showMessage(it)
+            }
         }
     }
 
-    private fun showErrorMessage(it: Boolean?) {
-        if (it == true) {
-            Toast.makeText(context, "Failed to create an account", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun showSuccessMessage(it: Boolean?) {
-        if (it == true) {
-            Toast.makeText(context, "Success create an account", Toast.LENGTH_SHORT).show()
+    private fun showMessage(isError: Boolean) {
+        if (isError) {
+            Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
 
             moveToLoginFragment()
         }
     }
 
-    private fun showLoading(it: Boolean?) {
-        binding.progressBar.visibility = if (it == true) View.VISIBLE else View.GONE
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private fun setupAction() {

@@ -12,8 +12,6 @@ import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.databinding.ActivityMainBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.home.HomeFragment
-import com.dicoding.storyapp.ui.login.LoginFragment
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "user_preferences"
@@ -34,17 +32,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        val preferences = UserPreferences.getInstance(dataStore)
+        val userPreferences = UserPreferences.getInstance(dataStore)
+
         viewModel = ViewModelProvider(
             this,
-            ViewModelFactory(preferences)
+            ViewModelFactory(userPreferences)
         )[MainViewModel::class.java]
     }
 
     private fun setupFragment() {
-        viewModel.getLogin()
         viewModel.getLogin().observe(this) { user ->
-            if (user.token != "") {
+            if (user.token.isNotBlank()) {
                 addToHomeFragment()
             } else {
                 addToLoginFragment()
