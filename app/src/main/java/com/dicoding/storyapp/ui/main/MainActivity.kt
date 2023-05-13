@@ -34,25 +34,38 @@ class MainActivity : AppCompatActivity() {
     private fun setupFragment() {
         viewModel.getLogin().observe(this) { user ->
             if (user.token.isNotBlank()) {
-                moveToHomeActivity()
+//                moveToHomeActivity()
+                addHomeFragment()
             } else {
                 addLoginFragment()
             }
         }
     }
 
+    private fun addHomeFragment() {
+        val fragmentManager = supportFragmentManager
+        val homeFragment = HomeFragment()
+        val fragment = fragmentManager.findFragmentByTag(HomeFragment::class.java.simpleName)
+
+        if (fragment !is HomeFragment) {
+            Log.d("StoryApp", "Fragment Name: ${HomeFragment::class.java.simpleName}")
+            fragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
+                .commit()
+        }
+    }
+
     private fun addLoginFragment() {
         val fragmentManager = supportFragmentManager
         val loginFragment = LoginFragment()
-        val fragment = fragmentManager.findFragmentByTag(
-            LoginFragment::class.java.simpleName
-        )
+        val fragment = fragmentManager.findFragmentByTag(LoginFragment::class.java.simpleName)
 
         if (fragment !is LoginFragment) {
-            Log.d("StoryApp", "Fragment Name: " + LoginFragment::class.java.simpleName)
+            Log.d("StoryApp", "Fragment Name: ${LoginFragment::class.java.simpleName}")
             fragmentManager
                 .beginTransaction()
-                .add(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
+                .replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
                 .commit()
     }
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.di.Injection
-import com.dicoding.storyapp.ui.home.HomeViewModel
 import com.dicoding.storyapp.ui.main.MainViewModel
 
 class ViewModelFactory(
@@ -32,9 +31,6 @@ class ViewModelFactory(
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
                 MainViewModel(userPreferences, userRepository) as T
-            }
-            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                HomeViewModel(userPreferences, userRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

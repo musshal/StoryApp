@@ -41,13 +41,11 @@ class MainViewModel(
 
     fun login(loginRequest: LoginRequest) = userRepository.login(loginRequest)
 
-    fun setLogin(user: UserEntity) {
-        viewModelScope.launch {
-            preferences.setLogin(user)
-        }
-    }
+    fun setLogin(user: UserEntity) { viewModelScope.launch { preferences.setLogin(user) } }
 
     fun getLogin() : LiveData<UserEntity> = preferences.getLogin().asLiveData()
+
+    fun deleteLogin() { viewModelScope.launch { preferences.deleteLogin() } }
 
     private fun getAllStories(token: String) {
         _isLoading.value = true
