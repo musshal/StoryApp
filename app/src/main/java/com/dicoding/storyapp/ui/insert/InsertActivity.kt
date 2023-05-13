@@ -109,6 +109,7 @@ class InsertActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.title = "Add New Story"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -225,6 +226,10 @@ class InsertActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
             R.id.menu_logout -> {
                 showLogoutDialog()
                 true
