@@ -11,6 +11,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
+import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
+import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.databinding.ActivityMainBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.home.HomeActivity
@@ -35,10 +37,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         val userPreferences = UserPreferences.getInstance(dataStore)
+        val userRepository = UserRepository.getInstance(ApiConfig.getApiService())
 
         viewModel = ViewModelProvider(
             this,
-            ViewModelFactory(userPreferences)
+            ViewModelFactory(userPreferences, userRepository)
         )[MainViewModel::class.java]
     }
 

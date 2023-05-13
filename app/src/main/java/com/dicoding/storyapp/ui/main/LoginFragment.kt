@@ -21,6 +21,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
+import com.dicoding.storyapp.data.remote.request.LoginRequest
+import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
+import com.dicoding.storyapp.data.repository.Result
+import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
@@ -47,41 +51,17 @@ class LoginFragment : Fragment() {
 
         setupViewModel()
         setupAction()
-        initObserver()
 
         return binding.root
     }
 
-    private fun initObserver() {
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-
-        viewModel.isError.observe(viewLifecycleOwner) {
-            if (it != null) {
-                showMessage(it)
-            }
-        }
-    }
-
-    private fun showMessage(isError: Boolean) {
-        if (isError) {
-            Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
     private fun setupViewModel() {
         val userPreferences = UserPreferences.getInstance(requireContext().dataStore)
+        val userRepository = UserRepository.getInstance(ApiConfig.getApiService())
 
         viewModel = ViewModelProvider(
             this,
-            ViewModelFactory(userPreferences)
+            ViewModelFactory(userPreferences, userRepository)
         )[MainViewModel::class.java]
     }
 
@@ -108,8 +88,30 @@ class LoginFragment : Fragment() {
                     binding.edLoginPassword.error = "Fill the password"
                 }
                 else -> {
-                    viewModel.login(email, password)
-                    activity?.recreate()
+                    viewModel.login(LoginRequest(email, password)).observe(viewLifecycleOwner) { result ->
+                        if (result != null) {
+                            when (result) {
+                                is Result.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                                is Result.Success -> {
+                                    binding.progressBar.visibility = View.GONE
+                                    Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
+
+                                    val userEntity = UserEntity(
+                                        result.data.loginResult.userId,
+                                        result.data.loginResult.name,
+                                        result.data.loginResult.token
+                                    )
+
+                                    viewModel.setLogin(userEntity)
+                                }
+                                is Result.Error -> {
+                                    Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

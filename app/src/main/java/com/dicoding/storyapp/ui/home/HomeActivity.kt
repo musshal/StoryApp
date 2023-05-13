@@ -13,6 +13,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
+import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
+import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.databinding.ActivityHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.main.MainActivity
@@ -36,10 +38,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         val userPreferences = UserPreferences.getInstance(dataStore)
+        val userRepository = UserRepository.getInstance(ApiConfig.getApiService())
 
         viewModel = ViewModelProvider(
             this,
-            ViewModelFactory(userPreferences)
+            ViewModelFactory(userPreferences, userRepository)
         )[HomeViewModel::class.java]
     }
 
@@ -63,7 +66,7 @@ class HomeActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Logout")
             .setMessage("Are you serious?")
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton("OK") { _, _ ->
                 run {
                     viewModel.deleteLogin()
                     moveToHomeActivity()

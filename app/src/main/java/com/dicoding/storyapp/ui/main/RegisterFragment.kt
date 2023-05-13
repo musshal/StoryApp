@@ -16,10 +16,25 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.local.preferences.UserPreferences
+import com.dicoding.storyapp.data.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
+import com.dicoding.storyapp.data.repository.Result.Loading
+import com.dicoding.storyapp.data.repository.Result.Success
+import com.dicoding.storyapp.data.repository.Result.Error
+import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
+import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "user_preferences"
+)
 
 class RegisterFragment : Fragment() {
 
@@ -39,39 +54,15 @@ class RegisterFragment : Fragment() {
 
         setupViewModel()
         setupAction()
-        initObserver()
 
         return binding.root
     }
 
-    private fun initObserver() {
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            showLoading(it)
-        }
-
-        viewModel.isError.observe(viewLifecycleOwner) {
-            if (it != null) {
-                showMessage(it)
-            }
-        }
-    }
-
-    private fun showMessage(isError: Boolean) {
-        if (isError) {
-            Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
-
-            moveToLoginFragment()
-        }
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        val userPreferences = UserPreferences.getInstance(requireContext().dataStore)
+        val userRepository = UserRepository.getInstance(ApiConfig.getApiService())
+
+        viewModel = ViewModelProvider(this, ViewModelFactory(userPreferences, userRepository))[MainViewModel::class.java]
     }
 
     private fun setupAction() {
@@ -102,7 +93,22 @@ class RegisterFragment : Fragment() {
                     binding.edRegisterPassword.error = "Password must be at least 8 character"
                 }
                 else -> {
-                    viewModel.register(name, email, password)
+                    viewModel.register(RegisterRequest(name, email, password)).observe(viewLifecycleOwner) { result ->
+                        if (result != null) {
+                            when (result) {
+                                is Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                                is Success -> {
+                                    binding.progressBar.visibility = View.GONE
+                                    Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
+                                }
+                                is Error -> {
+                                    Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

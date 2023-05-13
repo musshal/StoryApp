@@ -18,11 +18,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+
     @POST("register")
-    fun register(@Body request: RegisterRequest): Call<MessageResponse>
+    suspend fun register(@Body request: RegisterRequest): MessageResponse
 
     @POST("login")
-    fun login(@Body request: LoginRequest): Call<LoginResponse>
+    suspend fun login(@Body request: LoginRequest): LoginResponse
 
     @POST("stories")
     fun addNewStory(
