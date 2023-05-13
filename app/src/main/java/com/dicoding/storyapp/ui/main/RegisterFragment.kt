@@ -32,10 +32,6 @@ import com.dicoding.storyapp.databinding.FragmentRegisterBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "user_preferences"
-)
-
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
@@ -59,10 +55,10 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val userPreferences = UserPreferences.getInstance(requireContext().dataStore)
-        val userRepository = UserRepository.getInstance(ApiConfig.getApiService())
-
-        viewModel = ViewModelProvider(this, ViewModelFactory(userPreferences, userRepository))[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(requireContext())
+        )[MainViewModel::class.java]
     }
 
     private fun setupAction() {
