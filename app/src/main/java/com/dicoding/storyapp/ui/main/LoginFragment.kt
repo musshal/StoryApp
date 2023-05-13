@@ -69,8 +69,6 @@ class LoginFragment : Fragment() {
             Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
-
-            activity?.recreate()
         }
     }
 
@@ -111,13 +109,7 @@ class LoginFragment : Fragment() {
                 }
                 else -> {
                     viewModel.login(email, password)
-                    viewModel.user.observe(viewLifecycleOwner) {
-                        viewModel.setLogin(
-                            UserEntity(
-                                it.userId, it.name, it.token
-                            )
-                        )
-                    }
+                    activity?.recreate()
                 }
             }
         }

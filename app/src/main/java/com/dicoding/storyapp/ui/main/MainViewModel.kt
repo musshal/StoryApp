@@ -93,6 +93,11 @@ class MainViewModel(private val preferences: UserPreferences) : ViewModel() {
                         _isLoading.value = false
                         _isError.value = false
                         _user.value = responseBody.loginResult
+                        setLogin(UserEntity(
+                            responseBody.loginResult.userId,
+                            responseBody.loginResult.name,
+                            responseBody.loginResult.token
+                        ))
                     }
                 } else {
                     Log.e(TAG, "OnFailure: ${response.message()}")
