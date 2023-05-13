@@ -29,8 +29,10 @@ import com.dicoding.storyapp.helper.rotateFile
 import com.dicoding.storyapp.helper.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {
@@ -180,37 +182,7 @@ class InsertActivity : AppCompatActivity() {
                     requestImageFile
                 )
 
-                viewModel.getLogin().observe(this) { user ->
-                    viewModel.addNewStory(NewStoryRequest(
-                        user.token,
-                        desc,
-                        imageMultipart)
-                    ).observe(this) { result ->
-                        if (result != null) {
-                            when (result) {
-                                is Result.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                                is Result.Success -> {
-                                    binding.progressBar.visibility = View.GONE
-                                    Toast.makeText(
-                                        this,
-                                        "Add new story success",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    finish()
-                                }
-                                is Result.Error -> {
-                                    Toast.makeText(
-                                        this,
-                                        "Add new story failed",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-                    }
-                }
+                showAddNewStoryDialog(desc, imageMultipart)
             }
         }
     }
@@ -246,6 +218,53 @@ class InsertActivity : AppCompatActivity() {
                 run {
                     viewModel.deleteLogin()
                     finish()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                run {
+                    dialog.dismiss()
+                }
+            }
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun showAddNewStoryDialog(desc: RequestBody, photo: MultipartBody.Part) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add new story")
+            .setMessage("Are you serious?")
+            .setPositiveButton("OK") { _, _ ->
+                viewModel.getLogin().observe(this) { user ->
+                    viewModel.addNewStory(NewStoryRequest(
+                        user.token,
+                        desc,
+                        photo)
+                    ).observe(this) { result ->
+                        if (result != null) {
+                            when (result) {
+                                is Result.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                                is Result.Success -> {
+                                    binding.progressBar.visibility = View.GONE
+                                    Toast.makeText(
+                                        this,
+                                        "Add new story success",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    finish()
+                                }
+                                is Result.Error -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Add new story failed",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                    }
                 }
             }
             .setNegativeButton("Cancel") { dialog, _ ->
