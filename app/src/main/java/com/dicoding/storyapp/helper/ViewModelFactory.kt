@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
+import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.di.Injection
+import com.dicoding.storyapp.ui.insert.InsertViewModel
 import com.dicoding.storyapp.ui.main.MainViewModel
 
 class ViewModelFactory(
     private val userPreferences: UserPreferences,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val storyRepository: StoryRepository
     ) : NewInstanceFactory() {
 
     companion object {
@@ -21,7 +24,8 @@ class ViewModelFactory(
             instance ?: synchronized(this) {
                 instance ?: ViewModelFactory(
                     Injection.providePreferences(context),
-                    Injection.provideRepository()
+                    Injection.provideUserRepository(),
+                    Injection.provideStoryRepository()
                 )
             }.also { instance = it }
     }
@@ -30,9 +34,11 @@ class ViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                MainViewModel(userPreferences, userRepository) as T
+                MainViewModel(userPreferences, userRepository, storyRepository) as T
             }
-
+            modelClass.isAssignableFrom(InsertViewModel::class.java) -> {
+                InsertViewModel(userPreferences, userRepository, storyRepository) as T
+            }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }

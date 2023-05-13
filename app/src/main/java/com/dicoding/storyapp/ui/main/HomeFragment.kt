@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.insert.InsertActivity
 
 class HomeFragment : Fragment() {
 
@@ -49,11 +51,14 @@ class HomeFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.menu_insert -> {
+                startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
             R.id.menu_logout -> {
                 showLogoutDialog()
                 true
             }
-
             else -> true
         }
     }

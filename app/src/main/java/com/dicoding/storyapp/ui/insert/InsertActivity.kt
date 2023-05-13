@@ -15,7 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
+import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.camera.CameraActivity
 import com.dicoding.storyapp.helper.reduceFileImage
 import com.dicoding.storyapp.helper.rotateFile
@@ -112,21 +114,6 @@ class InsertActivity : AppCompatActivity() {
 
         setupViewModel()
         setupAction()
-        initObserver()
-    }
-
-    private fun initObserver() {
-        viewModel.isLoading.observe(this) {
-            showLoading(it)
-        }
-
-        viewModel.isSuccess.observe(this) {
-            showSuccessMessage(it)
-        }
-
-        viewModel.isError.observe(this) {
-            showErrorMessage(it)
-        }
     }
 
     private fun showErrorMessage(it: Boolean?) {
@@ -152,7 +139,10 @@ class InsertActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[InsertViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[InsertViewModel::class.java]
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -198,7 +188,36 @@ class InsertActivity : AppCompatActivity() {
                     requestImageFile
                 )
 
-                viewModel.addNewStory(description, imageMultipart)
+                viewModel.getLogin().observe(this) { user ->
+                    viewModel.addNewStory(
+                        user.token,
+                        description,
+                        imageMultipart
+                    ).observe(this) { result ->
+                        if (result != null) {
+                            when (result) {
+                                is Result.Loading -> {
+                                    binding.progressBar.visibility = View.VISIBLE
+                                }
+                                is Result.Success -> {
+                                    binding.progressBar.visibility = View.GONE
+                                    Toast.makeText(
+                                        this,
+                                        "Add new story success",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                is Result.Error -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Add new story failed",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
