@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -26,7 +27,6 @@ import com.dicoding.storyapp.ui.camera.CameraActivity
 import com.dicoding.storyapp.helper.reduceFileImage
 import com.dicoding.storyapp.helper.rotateFile
 import com.dicoding.storyapp.helper.uriToFile
-import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -178,10 +178,10 @@ class InsertActivity : AppCompatActivity() {
                 )
 
                 viewModel.getLogin().observe(this) { user ->
-                    viewModel.addNewStory(
+                    viewModel.addNewStory(NewStoryRequest(
                         user.token,
                         description,
-                        imageMultipart
+                        imageMultipart)
                     ).observe(this) { result ->
                         if (result != null) {
                             when (result) {
@@ -226,7 +226,6 @@ class InsertActivity : AppCompatActivity() {
                 showLogoutDialog()
                 true
             }
-
             else -> true
         }
     }

@@ -37,7 +37,7 @@ class ViewModelFactory(
                 MainViewModel(userPreferences, userRepository, storyRepository) as T
             }
             modelClass.isAssignableFrom(InsertViewModel::class.java) -> {
-                InsertViewModel(userPreferences, userRepository, storyRepository) as T
+                InsertViewModel(userPreferences, storyRepository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
