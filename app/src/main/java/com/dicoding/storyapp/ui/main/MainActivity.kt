@@ -1,6 +1,5 @@
 package com.dicoding.storyapp.ui.main
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityMainBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.home.HomeActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupFragment() {
         viewModel.getLogin().observe(this) { user ->
             if (user.token.isNotBlank()) {
-//                moveToHomeActivity()
                 addHomeFragment()
             } else {
                 addLoginFragment()
@@ -67,11 +64,6 @@ class MainActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
                 .commit()
-    }
-}
-
-    private fun moveToHomeActivity() {
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
+        }
     }
 }
