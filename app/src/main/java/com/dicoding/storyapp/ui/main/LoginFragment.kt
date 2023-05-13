@@ -70,7 +70,7 @@ class LoginFragment : Fragment() {
         } else {
             Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
 
-            replaceToHomeFragment()
+            activity?.recreate()
         }
     }
 
@@ -149,15 +149,6 @@ class LoginFragment : Fragment() {
         }
 
         binding.edLoginPassword.setSelection(selection)
-    }
-
-    private fun replaceToHomeFragment() {
-        val homeFragment = HomeFragment()
-        val fragmentManager = parentFragmentManager
-        fragmentManager.beginTransaction().apply {
-            replace(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
-            commit()
-        }
     }
 
     private fun moveToRegisterFragment() {

@@ -1,6 +1,7 @@
 package com.dicoding.storyapp.ui.main
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.databinding.ActivityMainBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.home.HomeActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "user_preferences"
@@ -42,15 +44,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragment() {
         viewModel.getLogin().observe(this) { user ->
-            if (user.token.isNotBlank()) {
-                addToHomeFragment()
+            if (user.token.isNotBlank()) {  moveToHomeActivity()
             } else {
-                addToLoginFragment()
+                addLoginFragment()
             }
         }
     }
 
-    private fun addToLoginFragment() {
+    private fun addLoginFragment() {
         val fragmentManager = supportFragmentManager
         val loginFragment = LoginFragment()
         val fragment = fragmentManager.findFragmentByTag(
@@ -66,19 +67,8 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-    private fun addToHomeFragment() {
-        val fragmentManager = supportFragmentManager
-        val homeFragment = HomeFragment()
-        val fragment = fragmentManager.findFragmentByTag(
-            HomeFragment::class.java.simpleName
-        )
-
-        if (fragment !is HomeFragment) {
-            Log.d("StoryApp", "Fragment Name: " + HomeFragment::class.java.simpleName)
-            fragmentManager
-                .beginTransaction()
-                .add(R.id.frame_container, homeFragment, HomeFragment::class.java.simpleName)
-                .commit()
-        }
+    private fun moveToHomeActivity() {
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 }
