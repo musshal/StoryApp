@@ -92,6 +92,7 @@ class RegisterFragment : Fragment() {
                                 is Success -> {
                                     binding.progressBar.visibility = View.GONE
                                     Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
+                                    moveToLoginFragment()
                                 }
                                 is Error -> {
                                     Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()

@@ -21,6 +21,7 @@ import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.adapter.StoriesAdapter
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.setting.SettingActivity
 
 class HomeFragment : Fragment() {
 
@@ -106,6 +107,10 @@ class HomeFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_setting -> {
+                startActivity(Intent(context, SettingActivity::class.java))
                 true
             }
             R.id.menu_logout -> {

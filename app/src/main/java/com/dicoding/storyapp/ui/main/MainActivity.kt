@@ -19,7 +19,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupViewModel()
+        initTheme()
         setupFragment()
+    }
+
+    private fun initTheme() {
+        viewModel.getThemeSetting()
     }
 
     private fun setupViewModel() {

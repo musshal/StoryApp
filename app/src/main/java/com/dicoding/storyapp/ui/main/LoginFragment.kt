@@ -23,6 +23,7 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.setting.SettingActivity
 
 class LoginFragment : Fragment() {
 
@@ -170,6 +171,10 @@ class LoginFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_setting -> {
+                startActivity(Intent(context, SettingActivity::class.java))
                 true
             }
             else -> true
