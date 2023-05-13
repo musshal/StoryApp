@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.option_menu_3, menu)
+        inflater.inflate(R.menu.option_menu_2, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

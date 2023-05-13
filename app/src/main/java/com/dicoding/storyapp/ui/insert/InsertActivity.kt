@@ -9,12 +9,16 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -22,6 +26,7 @@ import com.dicoding.storyapp.ui.camera.CameraActivity
 import com.dicoding.storyapp.helper.reduceFileImage
 import com.dicoding.storyapp.helper.rotateFile
 import com.dicoding.storyapp.helper.uriToFile
+import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -116,22 +121,6 @@ class InsertActivity : AppCompatActivity() {
         setupAction()
     }
 
-    private fun showErrorMessage(it: Boolean?) {
-        if (it == true) {
-            Toast.makeText(this, "Failed to add new story", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun showSuccessMessage(it: Boolean?) {
-        if (it == true) {
-            Toast.makeText(this, "Add new story success", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun showLoading(it: Boolean?) {
-        binding.progressBar.visibility = if (it == true) View.VISIBLE else View.GONE
-    }
-
     private fun setupAction() {
         binding.btnCameraX.setOnClickListener { startCameraX() }
         binding.btnGallery.setOnClickListener { startGallery() }
@@ -220,5 +209,45 @@ class InsertActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        viewModel.getLogin().observe(this) { user ->
+            if (user.token.isNotBlank()) {
+                menuInflater.inflate(R.menu.option_menu_3, menu)
+            }
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_logout -> {
+                showLogoutDialog()
+                true
+            }
+
+            else -> true
+        }
+    }
+
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Logout")
+            .setMessage("Are you serious?")
+            .setPositiveButton("OK") { _, _ ->
+                run {
+                    viewModel.deleteLogin()
+                    finish()
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                run {
+                    dialog.dismiss()
+                }
+            }
+
+        val alert = builder.create()
+        alert.show()
     }
 }

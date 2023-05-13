@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.local.preferences.UserPreferences
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
 class InsertViewModel(
@@ -26,6 +28,8 @@ class InsertViewModel(
     val isError: LiveData<Boolean> = _isError
 
     fun getLogin() : LiveData<UserEntity> = preferences.getLogin().asLiveData()
+
+    fun deleteLogin() { viewModelScope.launch { preferences.deleteLogin() } }
 
     fun addNewStory(token: String, description: String, photo: MultipartBody.Part) =
         storyRepository.addNewStory(token, description, photo)
