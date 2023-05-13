@@ -26,7 +26,7 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:id="@+id/tv_story_title"
+                android:id="@+id/tv_story_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:text="Story Title"
@@ -41,7 +41,7 @@
                 tools:text="Story Description"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:textSize="15sp"/>
+                android:textSize="18sp"/>
 
         </LinearLayout>
 

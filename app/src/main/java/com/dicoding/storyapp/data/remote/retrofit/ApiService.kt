@@ -7,6 +7,7 @@ import com.dicoding.storyapp.data.remote.response.DetailStoryResponse
 import com.dicoding.storyapp.data.remote.response.LoginResponse
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,7 +28,7 @@ interface ApiService {
     @Multipart
     @POST("stories/guest")
     suspend fun addNewStory(
-        @Part("description") description: String,
+        @Part("description") description: RequestBody,
         @Part photo: MultipartBody.Part
     ): MessageResponse
 
@@ -35,7 +36,7 @@ interface ApiService {
     @POST("stories")
     suspend fun addNewStory(
         @Header("Authorization") token: String,
-        @Part("description") description: String,
+        @Part("description") description: RequestBody,
         @Part photo: MultipartBody.Part
     ): MessageResponse
 

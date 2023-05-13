@@ -30,6 +30,7 @@ import com.dicoding.storyapp.helper.uriToFile
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {
@@ -170,6 +171,7 @@ class InsertActivity : AppCompatActivity() {
             }
             else -> {
                 val file = reduceFileImage(getFile as File)
+                val desc = description.toRequestBody("text/plain".toMediaType())
                 val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "photo",
@@ -180,7 +182,7 @@ class InsertActivity : AppCompatActivity() {
                 viewModel.getLogin().observe(this) { user ->
                     viewModel.addNewStory(NewStoryRequest(
                         user.token,
-                        description,
+                        desc,
                         imageMultipart)
                     ).observe(this) { result ->
                         if (result != null) {
@@ -195,6 +197,7 @@ class InsertActivity : AppCompatActivity() {
                                         "Add new story success",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    finish()
                                 }
                                 is Result.Error -> {
                                     Toast.makeText(

@@ -43,5 +43,5 @@ class MainViewModel(
 
     fun deleteLogin() { viewModelScope.launch { preferences.deleteLogin() } }
 
-    private fun getAllStories(token: String) = storyRepository.getAllStories(token)
+    fun getAllStories(token: String) = storyRepository.getAllStories(token)
 }

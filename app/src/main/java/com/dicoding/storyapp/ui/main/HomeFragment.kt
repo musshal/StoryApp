@@ -9,11 +9,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.adapter.StoriesAdapter
 import com.dicoding.storyapp.ui.insert.InsertActivity
 
 class HomeFragment : Fragment() {
@@ -33,6 +37,27 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         setupViewModel()
+        viewModel.getLogin().observe(viewLifecycleOwner) { user ->
+            if (user.token.isNotBlank()) {
+                viewModel.getAllStories(user.token).observe(viewLifecycleOwner) { result ->
+                    if (result != null) {
+                        when (result) {
+                            is Result.Loading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                            is Result.Success -> {
+                                binding.progressBar.visibility = View.GONE
+                                binding.rvStories.adapter = StoriesAdapter(result.data.listStory)
+                                binding.rvStories.layoutManager = LinearLayoutManager(context)
+                            }
+                            is Result.Error -> {
+                                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         return binding.root
     }
