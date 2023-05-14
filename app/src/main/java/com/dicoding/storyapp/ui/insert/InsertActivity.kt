@@ -110,7 +110,6 @@ class InsertActivity : AppCompatActivity() {
         binding = ActivityInsertBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "Add New Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (!allPermissionsGranted()) {
@@ -123,6 +122,14 @@ class InsertActivity : AppCompatActivity() {
 
         setupViewModel()
         setupAction()
+
+        viewModel.getLogin().observe(this) { user ->
+            if (user.token.isNotBlank()) {
+                supportActionBar?.title = "Add New Story"
+            } else {
+                supportActionBar?.title = "Add New Story (Guest)"
+            }
+        }
     }
 
     private fun setupAction() {
@@ -217,7 +224,9 @@ class InsertActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 run {
                     viewModel.deleteLogin()
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
                     finish()
                 }
             }
