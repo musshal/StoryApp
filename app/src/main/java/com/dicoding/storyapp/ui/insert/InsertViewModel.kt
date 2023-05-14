@@ -11,13 +11,13 @@ import com.dicoding.storyapp.data.repository.StoryRepository
 import kotlinx.coroutines.launch
 
 class InsertViewModel(
-    private val preferences: UserPreferences,
+    private val userPreferences: UserPreferences,
     private val storyRepository: StoryRepository
 ) : ViewModel() {
 
-    fun getLogin() : LiveData<UserEntity> = preferences.getLogin().asLiveData()
+    fun getLogin() : LiveData<UserEntity> = userPreferences.getLogin().asLiveData()
 
-    fun deleteLogin() { viewModelScope.launch { preferences.deleteLogin() } }
+    fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
 
     fun addNewStory(newStoryRequest: NewStoryRequest) = storyRepository.addNewStory(newStoryRequest)
 }

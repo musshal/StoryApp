@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.map
 
 class SettingPreferences private constructor(private val dataStore: DataStore<Preferences>) {
 
-    private val THEME_KEY = booleanPreferencesKey("theme_setting")
-
     companion object {
         @Volatile
         private var INSTANCE: SettingPreferences? = null
+
+        private val THEME_KEY = booleanPreferencesKey("theme_setting")
 
         fun getInstance(dataStore: DataStore<Preferences>) : SettingPreferences {
             return INSTANCE ?: synchronized(this) {

@@ -8,6 +8,8 @@ import com.dicoding.storyapp.data.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.di.Injection
+import com.dicoding.storyapp.ui.bookmark.BookmarkViewModel
+import com.dicoding.storyapp.ui.detail.DetailViewModel
 import com.dicoding.storyapp.ui.insert.InsertViewModel
 import com.dicoding.storyapp.ui.main.MainViewModel
 import com.dicoding.storyapp.ui.setting.SettingViewModel
@@ -47,6 +49,12 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(InsertViewModel::class.java) -> {
                 InsertViewModel(userPreferences, storyRepository) as T
+            }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(userPreferences) as T
+            }
+            modelClass.isAssignableFrom(BookmarkViewModel::class.java) -> {
+                BookmarkViewModel(userPreferences) as T
             }
             modelClass.isAssignableFrom(SettingViewModel::class.java) -> {
                 SettingViewModel(userPreferences, settingPreferences) as T

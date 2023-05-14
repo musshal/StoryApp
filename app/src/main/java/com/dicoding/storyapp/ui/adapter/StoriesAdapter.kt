@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.remote.response.StoryResponse
+import com.dicoding.storyapp.ui.detail.DetailActivity
 
 class StoriesAdapter(private val stories: ArrayList<StoryResponse>) :
     RecyclerView.Adapter<StoriesAdapter.ViewHolder>() {
@@ -17,6 +19,14 @@ class StoriesAdapter(private val stories: ArrayList<StoryResponse>) :
         val ivStoryImage: ImageView = view.findViewById(R.id.iv_story_image)
         val tvStoryName: TextView = view.findViewById(R.id.tv_story_name)
         val tvStoryDescription: TextView = view.findViewById(R.id.tv_story_description)
+
+        fun bind(story: StoryResponse) {
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context, DetailActivity::class.java)
+                intent.putExtra(DetailActivity.EXTRA_STORY, story)
+                itemView.context.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -35,5 +45,6 @@ class StoriesAdapter(private val stories: ArrayList<StoryResponse>) :
 
         holder.tvStoryName.text = story.name
         holder.tvStoryDescription.text = story.description
+        holder.bind(story)
     }
 }

@@ -8,7 +8,6 @@ import com.dicoding.storyapp.data.remote.response.LoginResponse
 import com.dicoding.storyapp.data.remote.response.MessageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -43,11 +42,9 @@ interface ApiService {
     @GET("stories")
     suspend fun getAllStories(@Header("Authorization") token: String): AllStoriesResponse
 
-    @GET("stories?location=1")
-    fun getAllStoriesByLocation(
-        @Header("Authorization") token: String,
-    ): Call<AllStoriesResponse>
-
     @GET("stories/{id}")
-    fun getDetailStory(@Path("id") id: String): Call<DetailStoryResponse>
+    suspend fun getDetailStory(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): DetailStoryResponse
 }

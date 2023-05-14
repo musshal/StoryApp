@@ -20,6 +20,7 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.adapter.StoriesAdapter
+import com.dicoding.storyapp.ui.bookmark.BookmarkActivity
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.setting.SettingActivity
 
@@ -107,6 +108,10 @@ class HomeFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_bookmarks -> {
+                startActivity(Intent(context, BookmarkActivity::class.java))
                 true
             }
             R.id.menu_setting -> {

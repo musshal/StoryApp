@@ -18,10 +18,13 @@
         android:theme="@style/Theme.StoryApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.setting.SettingActivity"
+            android:name=".ui.bookmark.BookmarkActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.detail.DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.setting.SettingActivity"
             android:exported="false" />
         <activity
             android:name=".ui.insert.InsertActivity"

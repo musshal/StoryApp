@@ -10,16 +10,14 @@ import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
 
-private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "user_preferences"
-)
-
-private val Context.settingDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "settings"
-)
-
 object Injection {
 
+    private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "user_preferences"
+    )
+    private val Context.settingDataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "settings"
+    )
     private val apiService = ApiConfig.getApiService()
 
     fun provideUserPreferences(context: Context) : UserPreferences {

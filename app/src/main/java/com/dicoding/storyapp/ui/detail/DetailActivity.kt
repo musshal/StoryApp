@@ -1,41 +1,43 @@
-package com.dicoding.storyapp.ui.setting
+package com.dicoding.storyapp.ui.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.databinding.ActivitySettingBinding
+import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 
-class SettingActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySettingBinding
-    private lateinit var viewModel: SettingViewModel
+    private lateinit var binding: ActivityDetailBinding
+    private lateinit var viewModel: DetailViewModel
+
+    companion object {
+        const val EXTRA_STORY = "extra_story"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingBinding.inflate(layoutInflater)
+        binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.elevation = 0f
-        supportActionBar?.title = "Setting"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupViewModel()
-        initTheme()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[DetailViewModel::class.java]
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        viewModel.getLogin().observe(this) { user ->
-            if (user.token.isNotBlank()) {
-                menuInflater.inflate(R.menu.option_menu_3, menu)
-            }
-        }
+        menuInflater.inflate(R.menu.option_menu_3, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -71,28 +73,5 @@ class SettingActivity : AppCompatActivity() {
 
         val alert = builder.create()
         alert.show()
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[SettingViewModel::class.java]
-    }
-
-    private fun initTheme() {
-        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.switchTheme.isChecked = false
-            }
-        }
-
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
     }
 }
