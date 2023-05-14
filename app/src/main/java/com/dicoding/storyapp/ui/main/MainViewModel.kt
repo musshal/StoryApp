@@ -9,7 +9,6 @@ import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.remote.request.LoginRequest
 import com.dicoding.storyapp.data.remote.request.RegisterRequest
-import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
 import kotlinx.coroutines.launch
 

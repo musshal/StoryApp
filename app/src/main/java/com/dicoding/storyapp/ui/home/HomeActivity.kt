@@ -13,7 +13,6 @@ import com.dicoding.storyapp.databinding.ActivityHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.adapter.SectionsPagerAdapter
 import com.dicoding.storyapp.ui.insert.InsertActivity
-import com.dicoding.storyapp.ui.insert.InsertViewModel
 import com.dicoding.storyapp.ui.main.MainActivity
 import com.dicoding.storyapp.ui.setting.SettingActivity
 import com.google.android.material.tabs.TabLayout
@@ -34,15 +33,18 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.elevation = 0f
+
+        setupSectionsPagerAdapter()
+        setupViewModel()
+    }
+
+    private fun setupSectionsPagerAdapter() {
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         binding.viewPager.adapter = sectionsPagerAdapter
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
-
-        setupViewModel()
-
-        supportActionBar?.elevation = 0f
     }
 
     private fun setupViewModel() {
@@ -80,19 +82,19 @@ class HomeActivity : AppCompatActivity() {
         builder.setTitle("Logout")
             .setMessage("Are you serious?")
             .setPositiveButton("OK") { _, _ ->
-                run {
-                    viewModel.deleteLogin()
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                }
+                viewModel.deleteLogin()
+                directToMainActivity()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
             }
 
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun directToMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

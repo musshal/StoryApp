@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.remote.request.LoginRequest
+import com.dicoding.storyapp.data.remote.response.LoginResultResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -51,20 +52,11 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
-                    // If back button is clicked twice within the time interval, close the app or fragment
                     requireActivity().finish()
                 } else {
                     Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
@@ -74,64 +66,76 @@ class LoginFragment : Fragment() {
         })
     }
 
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+    }
+
+    private fun setupAction() {
+        binding.apply {
+            edLoginPassword.setOnEditorActionListener { _, actionId, _ ->
+                clearFocusOnDoneAction(actionId)
+            }
+
+            cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+                toggleLoginPasswordVisibility(isChecked)
+            }
+
+            tvSignUp.setOnClickListener { moveToRegisterFragment() }
+
+            btnSignIn.setOnClickListener {
+                val email = edLoginEmail.text.toString()
+                val password = edLoginPassword.text.toString()
+
+                when {
+                    email.isEmpty() -> {
+                        edLoginEmail.error = "Please fill the email"
+                    }
+                    password.isEmpty() -> {
+                        edLoginPassword.error = "Please fill the password"
+                    }
+                    else -> {
+                        executeLogin(email, password)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun executeLogin(email: String, password: String) {
+        viewModel.login(LoginRequest(email, password)).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
+
+                        setLogin(result.data.loginResult)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setLogin(loginResult: LoginResultResponse) {
+        loginResult.apply { viewModel.setLogin(UserEntity(userId, name, token)) }
+    }
+
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(requireContext())
         )[MainViewModel::class.java]
-    }
-
-    private fun setupAction() {
-        binding.edLoginPassword.setOnEditorActionListener { _, actionId, _ ->
-            clearFocusOnDoneAction(actionId)
-        }
-
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            toggleLoginPasswordVisibility(isChecked)
-        }
-
-        binding.tvSignUp.setOnClickListener { moveToRegisterFragment() }
-
-        binding.btnSignIn.setOnClickListener {
-            val email = binding.edLoginEmail.text.toString()
-            val password = binding.edLoginPassword.text.toString()
-
-            when {
-                email.isEmpty() -> {
-                    binding.edLoginEmail.error = "Fill the email"
-                }
-                password.isEmpty() -> {
-                    binding.edLoginPassword.error = "Fill the password"
-                }
-                else -> {
-                    viewModel.login(LoginRequest(email, password)).observe(viewLifecycleOwner) { result ->
-                        if (result != null) {
-                            when (result) {
-                                is Result.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                                is Result.Success -> {
-                                    binding.progressBar.visibility = View.GONE
-                                    Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
-
-                                    val userEntity = UserEntity(
-                                        result.data.loginResult.userId,
-                                        result.data.loginResult.name,
-                                        result.data.loginResult.token
-                                    )
-
-                                    viewModel.setLogin(userEntity)
-                                }
-                                is Result.Error -> {
-                                    binding.progressBar.visibility = View.GONE
-                                    Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {

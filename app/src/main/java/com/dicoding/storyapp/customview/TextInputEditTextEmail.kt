@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Patterns
-import com.dicoding.storyapp.R
 import com.google.android.material.textfield.TextInputEditText
 
 class TextInputEditTextEmail : TextInputEditText {
@@ -16,7 +15,11 @@ class TextInputEditTextEmail : TextInputEditText {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init()
     }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(
+        context: Context,
+        attrs: AttributeSet,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -26,11 +29,13 @@ class TextInputEditTextEmail : TextInputEditText {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val email = s.toString()
-                val isValidEmail = email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                val isValidEmail =
+                    email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
                 error = if (isValidEmail) {
                     null
                 } else {
-                    "Email must be valid"
+                    "Email must be a valid email"
                 }
             }
 

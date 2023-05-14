@@ -30,6 +30,7 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.elevation = 0f
         supportActionBar?.title = "Detail Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -41,30 +42,41 @@ class DetailActivity : AppCompatActivity() {
 
     private fun setupAction(story: StoryResponse?) {
         viewModel.getLogin().observe(this) { user ->
-            if (story != null) {
-                viewModel.getDetailStory(user.token, story.id).observe(this) { result ->
-                    if (result != null) {
-                        when (result) {
-                            is Result.Loading -> {
-                                binding.progressBar.visibility = View.VISIBLE
-                            }
-                            is Result.Success -> {
-                                binding.progressBar.visibility = View.GONE
-                                binding.fabDetailSaveBookmark.visibility = View.VISIBLE
-                                val storyDetail = result.data.story
+            if (story != null) executeGetDetailStory(user.token, story.id)
+        }
+    }
 
-                                Glide.with(this@DetailActivity).load(storyDetail.photoUrl).into(binding.ivDetailPhoto)
-                                binding.tvDetailName.text = storyDetail.name
-                                binding.tvDetailDescription.text = storyDetail.description
-                                binding.tvDetailCreatedAt.text = storyDetail.createdAt
-                            }
-                            is Result.Error -> {
-                                binding.progressBar.visibility = View.GONE
-                            }
-                        }
+    private fun executeGetDetailStory(token: String, id: String) {
+        viewModel.getDetailStory(token, id).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.fabDetailSaveBookmark.visibility = View.VISIBLE
+
+                        setData(result.data.story)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
                     }
                 }
             }
+        }
+    }
+
+    private fun setData(story: StoryResponse) {
+        binding.apply {
+            Glide
+                .with(this@DetailActivity)
+                .load(story.photoUrl)
+                .into(ivDetailPhoto)
+
+            tvDetailName.text = story.name
+            tvDetailDescription.text = story.description
+            tvDetailCreatedAt.text = story.createdAt
         }
     }
 
@@ -99,21 +111,21 @@ class DetailActivity : AppCompatActivity() {
         builder.setTitle("Logout")
             .setMessage("Are you serious?")
             .setPositiveButton("OK") { _, _ ->
-                run {
-                    viewModel.deleteLogin()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                }
+                viewModel.deleteLogin()
+                directToMainActivity()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
             }
 
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun directToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 }

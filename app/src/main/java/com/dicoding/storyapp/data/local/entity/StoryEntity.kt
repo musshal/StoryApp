@@ -1,11 +1,14 @@
 package com.dicoding.storyapp.data.local.entity
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "stories")
+@Parcelize
 class StoryEntity(
     @field:ColumnInfo(name = "id")
     @field:PrimaryKey
@@ -28,4 +31,4 @@ class StoryEntity(
 
     @field:SerializedName("lon")
     val lon: Float? = null
-)
+) : Parcelable

@@ -32,6 +32,33 @@ class SettingActivity : AppCompatActivity() {
         initTheme()
     }
 
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[SettingViewModel::class.java]
+    }
+
+    private fun initTheme() {
+        executeGetThemeSetting()
+
+        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            viewModel.saveThemeSetting(isChecked)
+        }
+    }
+
+    private fun executeGetThemeSetting() {
+        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.switchTheme.isChecked = true
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.switchTheme.isChecked = false
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         viewModel.getLogin().observe(this) { user ->
             if (user.token.isNotBlank()) {
@@ -60,44 +87,21 @@ class SettingActivity : AppCompatActivity() {
         builder.setTitle("Logout")
             .setMessage("Are you serious?")
             .setPositiveButton("OK") { _, _ ->
-                run {
-                    viewModel.deleteLogin()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                }
+                viewModel.deleteLogin()
+                directToMainActivity()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
             }
 
         val alert = builder.create()
         alert.show()
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[SettingViewModel::class.java]
-    }
-
-    private fun initTheme() {
-        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.switchTheme.isChecked = false
-            }
-        }
-
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
+    private fun directToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 }

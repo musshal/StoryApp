@@ -14,8 +14,7 @@ class SettingViewModel(
     private val settingPreferences: SettingPreferences
     ) : ViewModel() {
 
-    fun saveThemeSetting(isDarkModeActive: Boolean) {
-        viewModelScope.launch {
+    fun saveThemeSetting(isDarkModeActive: Boolean) { viewModelScope.launch {
             settingPreferences.saveThemeSetting(isDarkModeActive)
         }
     }
