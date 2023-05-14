@@ -102,13 +102,16 @@ class RegisterFragment : Fragment() {
                 when (result) {
                     is Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        binding.btnSignUp.isEnabled = false
                     }
                     is Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.btnSignUp.isEnabled = true
                         Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
                         moveToLoginFragment()
                     }
                     is Error -> {
+                        binding.btnSignUp.isEnabled = true
                         Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
                     }
                 }

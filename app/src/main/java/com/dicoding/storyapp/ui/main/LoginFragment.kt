@@ -111,15 +111,18 @@ class LoginFragment : Fragment() {
                 when (result) {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        binding.btnSignIn.isEnabled = false
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.btnSignIn.isEnabled = true
                         Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
 
                         setLogin(result.data.loginResult)
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.btnSignIn.isEnabled = true
                         Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
                     }
                 }
