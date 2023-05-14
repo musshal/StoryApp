@@ -10,7 +10,7 @@ import com.dicoding.storyapp.data.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.repository.StoryRepository
 import kotlinx.coroutines.launch
 
-class InsertViewModel(
+class   InsertViewModel(
     private val userPreferences: UserPreferences,
     private val storyRepository: StoryRepository
 ) : ViewModel() {

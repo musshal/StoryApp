@@ -32,11 +32,7 @@ object Injection {
         return SettingPreferences.getInstance(dataStore)
     }
 
-    fun provideUserRepository() : UserRepository {
-        return UserRepository.getInstance(apiService)
-    }
+    fun provideUserRepository() : UserRepository = UserRepository.getInstance(apiService)
 
-    fun provideStoryRepository() : StoryRepository {
-        return StoryRepository.getInstance(apiService)
-    }
+    fun provideStoryRepository() : StoryRepository = StoryRepository.getInstance(apiService)
 }

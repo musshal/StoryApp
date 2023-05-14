@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.remote.response.StoryResponse
+import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 
@@ -24,9 +28,41 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.title = "Detail Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val story = intent.getParcelableExtra(EXTRA_STORY) as StoryResponse?
+
         setupViewModel()
+        setupAction(story)
+    }
+
+    private fun setupAction(story: StoryResponse?) {
+        viewModel.getLogin().observe(this) { user ->
+            if (story != null) {
+                viewModel.getDetailStory(user.token, story.id).observe(this) { result ->
+                    if (result != null) {
+                        when (result) {
+                            is Result.Loading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                            is Result.Success -> {
+                                binding.progressBar.visibility = View.GONE
+                                val storyDetail = result.data.story
+
+                                Glide.with(this@DetailActivity).load(storyDetail.photoUrl).into(binding.ivStoryImageDetail)
+                                binding.tvStoryNameDetail.text = storyDetail.name
+                                binding.tvStoryDescriptionDetail.text = storyDetail.description
+                                binding.tvStoryCreatedAt.text = storyDetail.createdAt
+                            }
+                            is Result.Error -> {
+                                binding.progressBar.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupViewModel() {

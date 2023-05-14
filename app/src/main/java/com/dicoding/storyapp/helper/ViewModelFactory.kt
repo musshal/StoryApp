@@ -51,7 +51,7 @@ class ViewModelFactory(
                 InsertViewModel(userPreferences, storyRepository) as T
             }
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
-                DetailViewModel(userPreferences) as T
+                DetailViewModel(userPreferences, storyRepository) as T
             }
             modelClass.isAssignableFrom(BookmarkViewModel::class.java) -> {
                 BookmarkViewModel(userPreferences) as T
