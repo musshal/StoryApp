@@ -25,6 +25,7 @@ import com.dicoding.storyapp.data.repository.Result.Error
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.setting.SettingActivity
 
 class RegisterFragment : Fragment() {
 
@@ -92,6 +93,7 @@ class RegisterFragment : Fragment() {
                                 is Success -> {
                                     binding.progressBar.visibility = View.GONE
                                     Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
+                                    moveToLoginFragment()
                                 }
                                 is Error -> {
                                     Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
@@ -175,6 +177,10 @@ class RegisterFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_setting -> {
+                startActivity(Intent(context, SettingActivity::class.java))
                 true
             }
             else -> true

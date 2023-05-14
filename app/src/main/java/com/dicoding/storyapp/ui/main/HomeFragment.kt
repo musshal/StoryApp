@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,12 +20,16 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.adapter.StoriesAdapter
+import com.dicoding.storyapp.ui.bookmark.BookmarkActivity
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.setting.SettingActivity
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: MainViewModel
+    private var backPressedTime: Long = 0
+    private val BACK_PRESSED_INTERVAL = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +50,21 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
+                    // If back button is clicked twice within the time interval, close the app or fragment
+                    requireActivity().finish()
+                } else {
+                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
     }
 
     private fun setupData() {
@@ -88,6 +108,14 @@ class HomeFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_bookmarks -> {
+                startActivity(Intent(context, BookmarkActivity::class.java))
+                true
+            }
+            R.id.menu_setting -> {
+                startActivity(Intent(context, SettingActivity::class.java))
                 true
             }
             R.id.menu_logout -> {

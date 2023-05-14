@@ -10,5 +10,5 @@ data class DetailStoryResponse(
     val message: String,
 
     @field:SerializedName("story")
-    val story: List<StoryResponse>
+    val story: StoryResponse
 )

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
@@ -22,11 +23,14 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
+import com.dicoding.storyapp.ui.setting.SettingActivity
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private lateinit var viewModel: MainViewModel
+    private var backPressedTime: Long = 0
+    private val BACK_PRESSED_INTERVAL = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,21 @@ class LoginFragment : Fragment() {
         setupAction()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
+                    // If back button is clicked twice within the time interval, close the app or fragment
+                    requireActivity().finish()
+                } else {
+                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
     }
 
     private fun setupViewModel() {
@@ -94,6 +113,7 @@ class LoginFragment : Fragment() {
                                     viewModel.setLogin(userEntity)
                                 }
                                 is Result.Error -> {
+                                    binding.progressBar.visibility = View.GONE
                                     Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -151,6 +171,10 @@ class LoginFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(context, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_setting -> {
+                startActivity(Intent(context, SettingActivity::class.java))
                 true
             }
             else -> true
