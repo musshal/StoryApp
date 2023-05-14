@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.main
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -45,8 +46,17 @@ class LoginFragment : Fragment() {
 
         setupViewModel()
         setupAction()
+        playAnimation()
 
         return binding.root
+    }
+
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

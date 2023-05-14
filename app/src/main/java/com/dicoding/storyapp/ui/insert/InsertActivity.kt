@@ -32,7 +32,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {
@@ -68,7 +67,7 @@ class InsertActivity : AppCompatActivity() {
             myFile?.let { file ->
                 rotateFile(file, isBackCamera)
                 getFile = file
-                binding.ivStoryImage.setImageBitmap(BitmapFactory.decodeFile(file.path))
+                binding.ivItemImage.setImageBitmap(BitmapFactory.decodeFile(file.path))
             }
         }
     }
@@ -81,7 +80,7 @@ class InsertActivity : AppCompatActivity() {
             selectedImg.let { uri ->
                 val myFile = uriToFile(uri, this@InsertActivity)
                 getFile = myFile
-                binding.ivStoryImage.setImageURI(uri)
+                binding.ivItemImage.setImageURI(uri)
             }
         }
     }
@@ -128,7 +127,7 @@ class InsertActivity : AppCompatActivity() {
     private fun setupAction() {
         binding.btnCameraX.setOnClickListener { startCameraX() }
         binding.btnGallery.setOnClickListener { startGallery() }
-        binding.btnUpload.setOnClickListener { uploadStory() }
+        binding.btnAdd.setOnClickListener { uploadStory() }
     }
 
     private fun setupViewModel() {
@@ -155,7 +154,7 @@ class InsertActivity : AppCompatActivity() {
     }
 
     private fun uploadStory() {
-        val description = binding.edStoryDescription.text.toString()
+        val description = binding.edAddDescription.text.toString()
 
         when {
             getFile == null -> {

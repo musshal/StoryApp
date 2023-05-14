@@ -1,11 +1,10 @@
 package com.dicoding.storyapp.ui.main
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -45,8 +44,17 @@ class RegisterFragment : Fragment() {
 
         setupViewModel()
         setupAction()
+        playAnimation()
 
         return binding.root
+    }
+
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
     }
 
     private fun setupViewModel() {

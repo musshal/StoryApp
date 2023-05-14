@@ -50,10 +50,10 @@ class DetailActivity : AppCompatActivity() {
                                 binding.progressBar.visibility = View.GONE
                                 val storyDetail = result.data.story
 
-                                Glide.with(this@DetailActivity).load(storyDetail.photoUrl).into(binding.ivStoryImageDetail)
-                                binding.tvStoryNameDetail.text = storyDetail.name
-                                binding.tvStoryDescriptionDetail.text = storyDetail.description
-                                binding.tvStoryCreatedAt.text = storyDetail.createdAt
+                                Glide.with(this@DetailActivity).load(storyDetail.photoUrl).into(binding.ivDetailPhoto)
+                                binding.tvDetailName.text = storyDetail.name
+                                binding.tvDetailDescription.text = storyDetail.description
+                                binding.tvDetailCreatedAt.text = storyDetail.createdAt
                             }
                             is Result.Error -> {
                                 binding.progressBar.visibility = View.GONE

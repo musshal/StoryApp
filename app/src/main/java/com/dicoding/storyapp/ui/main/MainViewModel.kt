@@ -1,7 +1,6 @@
 package com.dicoding.storyapp.ui.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,7 +9,6 @@ import com.dicoding.storyapp.data.local.entity.UserEntity
 import com.dicoding.storyapp.data.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.remote.request.LoginRequest
 import com.dicoding.storyapp.data.remote.request.RegisterRequest
-import com.dicoding.storyapp.data.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
 import kotlinx.coroutines.launch

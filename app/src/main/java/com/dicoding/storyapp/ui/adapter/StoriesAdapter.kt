@@ -16,9 +16,9 @@ class StoriesAdapter(private val stories: ArrayList<StoryResponse>) :
     RecyclerView.Adapter<StoriesAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivStoryImage: ImageView = view.findViewById(R.id.iv_story_image)
-        val tvStoryName: TextView = view.findViewById(R.id.tv_story_name)
-        val tvStoryDescription: TextView = view.findViewById(R.id.tv_story_description)
+        val ivStoryImage: ImageView = view.findViewById(R.id.iv_item_photo)
+        val tvStoryName: TextView = view.findViewById(R.id.tv_item_name)
+        val tvStoryDescription: TextView = view.findViewById(R.id.tv_item_description)
 
         fun bind(story: StoryResponse) {
             itemView.setOnClickListener {

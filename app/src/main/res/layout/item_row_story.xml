@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/iv_story_image"
+            android:id="@+id/iv_item_photo"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             tools:src="@tools:sample/backgrounds/scenic"
@@ -26,7 +26,7 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:id="@+id/tv_story_name"
+                android:id="@+id/tv_item_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:text="Story Title"
@@ -34,7 +34,7 @@
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/tv_story_description"
+                android:id="@+id/tv_item_description"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
