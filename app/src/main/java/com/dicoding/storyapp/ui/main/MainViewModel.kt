@@ -16,8 +16,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val userPreferences: UserPreferences,
     private val settingPreferences: SettingPreferences,
-    private val userRepository: UserRepository,
-    private val storyRepository: StoryRepository
+    private val userRepository: UserRepository
     ) : ViewModel() {
 
     fun register(registerRequest: RegisterRequest) = userRepository.register(registerRequest)
@@ -29,8 +28,6 @@ class MainViewModel(
     fun getLogin() : LiveData<UserEntity> = userPreferences.getLogin().asLiveData()
 
     fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
-
-    fun getAllStories(token: String) = storyRepository.getAllStories(token)
 
     fun getThemeSetting() : LiveData<Boolean> = settingPreferences.getThemeSetting().asLiveData()
 }

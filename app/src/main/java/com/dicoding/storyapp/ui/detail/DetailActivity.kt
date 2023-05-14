@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.detail
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -13,6 +14,7 @@ import com.dicoding.storyapp.data.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.main.MainActivity
 
 class DetailActivity : AppCompatActivity() {
 
@@ -48,6 +50,7 @@ class DetailActivity : AppCompatActivity() {
                             }
                             is Result.Success -> {
                                 binding.progressBar.visibility = View.GONE
+                                binding.fabDetailSaveBookmark.visibility = View.VISIBLE
                                 val storyDetail = result.data.story
 
                                 Glide.with(this@DetailActivity).load(storyDetail.photoUrl).into(binding.ivDetailPhoto)
@@ -98,6 +101,9 @@ class DetailActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 run {
                     viewModel.deleteLogin()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
                     finish()
                 }
             }

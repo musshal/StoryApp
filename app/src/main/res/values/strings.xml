@@ -26,4 +26,7 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="setting">Setting</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="save_bookmark">Save Bookmark</string>
+    <string name="detail_save_bookmark">Detail Save Bookmark</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

@@ -27,6 +27,7 @@ import com.dicoding.storyapp.ui.camera.CameraActivity
 import com.dicoding.storyapp.helper.reduceFileImage
 import com.dicoding.storyapp.helper.rotateFile
 import com.dicoding.storyapp.helper.uriToFile
+import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -216,6 +217,7 @@ class InsertActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 run {
                     viewModel.deleteLogin()
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }
             }
