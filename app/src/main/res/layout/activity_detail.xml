@@ -62,7 +62,7 @@
         app:layout_anchorGravity="bottom|end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/baseline_bookmark_border_24"
+        tools:src="@drawable/baseline_bookmark_border_48"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

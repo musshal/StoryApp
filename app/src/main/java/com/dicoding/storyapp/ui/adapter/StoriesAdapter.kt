@@ -56,12 +56,12 @@ class StoriesAdapter(private val onBookmarkClick: (StoryEntity) -> Unit) :
         if (story.isBookmarked) {
             ivBookmark.setImageDrawable(ContextCompat.getDrawable(
                 ivBookmark.context,
-                R.drawable.baseline_bookmark_24)
+                R.drawable.baseline_bookmark_48)
             )
         } else {
             ivBookmark.setImageDrawable(ContextCompat.getDrawable(
                 ivBookmark.context,
-                R.drawable.baseline_bookmark_border_24)
+                R.drawable.baseline_bookmark_border_48)
             )
         }
 

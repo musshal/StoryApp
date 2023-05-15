@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.source.local.entity.UserEntity
 import com.dicoding.storyapp.data.repository.StoryRepository
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
@@ -16,7 +17,19 @@ class DetailViewModel(
 
     fun getLogin() : LiveData<UserEntity> = userPreferences.getLogin().asLiveData()
 
+    fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
+
     fun getDetailStory(token: String, id: String) = storyRepository.getDetailStory(token, id)
 
-    fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
+    fun saveStory(storyEntity: StoryEntity) {
+        viewModelScope.launch {
+            storyRepository.setStoryBookmark(storyEntity, true)
+        }
+    }
+
+    fun deleteStory(story: StoryEntity) {
+        viewModelScope.launch {
+            storyRepository.setStoryBookmark(story, false)
+        }
+    }
 }
