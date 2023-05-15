@@ -1,11 +1,10 @@
 package com.dicoding.storyapp.ui.main
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -45,6 +44,7 @@ class RegisterFragment : Fragment() {
 
         setupViewModel()
         setupAction()
+        playAnimation()
 
         return binding.root
     }
@@ -57,79 +57,65 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setupAction() {
-        edRegisterPasswordBehavior()
-
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            toggleLoginPasswordVisibility(isChecked)
-        }
-
-        binding.tvSignIn.setOnClickListener { moveToLoginFragment() }
-
-        binding.btnSignUp.setOnClickListener {
-            val name = binding.edRegisterName.text.toString()
-            val email = binding.edRegisterEmail.text.toString()
-            val password = binding.edRegisterPassword.text.toString()
-
-            when {
-                name.isEmpty() -> {
-                    binding.edRegisterName.error = "Masukkan name"
+        binding.apply {
+            edRegisterPassword.apply {
+                setOnEditorActionListener { _, actionId, _ ->
+                    clearFocusOnDoneAction(actionId)
                 }
-                email.isEmpty() -> {
-                    binding.edRegisterEmail.error = "Masukkan email"
-                }
-                password.isEmpty() -> {
-                    binding.edRegisterPassword.error = "Masukkan password"
-                }
-                password.length < 8 -> {
-                    binding.edRegisterPassword.error = "Password must be at least 8 character"
-                }
-                else -> {
-                    viewModel.register(RegisterRequest(name, email, password)).observe(viewLifecycleOwner) { result ->
-                        if (result != null) {
-                            when (result) {
-                                is Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                                is Success -> {
-                                    binding.progressBar.visibility = View.GONE
-                                    Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
-                                    moveToLoginFragment()
-                                }
-                                is Error -> {
-                                    Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
+            }
+
+            cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+                toggleLoginPasswordVisibility(isChecked)
+            }
+
+            tvSignIn.setOnClickListener { moveToLoginFragment() }
+
+            btnSignUp.setOnClickListener {
+                val name = edRegisterName.text.toString()
+                val email = edRegisterEmail.text.toString()
+                val password = edRegisterPassword.text.toString()
+
+                when {
+                    name.isEmpty() -> {
+                        edRegisterName.error = "Masukkan name"
+                    }
+                    email.isEmpty() -> {
+                        edRegisterEmail.error = "Masukkan email"
+                    }
+                    password.isEmpty() -> {
+                        edRegisterPassword.error = "Masukkan password"
+                    }
+                    password.length < 8 -> {
+                        edRegisterPassword.error = "Password must be at least 8 character"
+                    }
+                    else -> {
+                        executeRegister(name, email, password)
                     }
                 }
             }
         }
     }
 
-    private fun edRegisterPasswordBehavior() {
-        binding.edRegisterPassword.apply {
-            setOnEditorActionListener { _, actionId, _ ->
-                clearFocusOnDoneAction(actionId)
-            }
-
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    error = if (s!!.length < 8) {
-                        "Password must be at least 8 character"
-                    } else {
-                        null
+    private fun executeRegister(name: String, email: String, password: String) {
+        viewModel.register(RegisterRequest(name, email, password)).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.btnSignUp.isEnabled = false
+                    }
+                    is Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.btnSignUp.isEnabled = true
+                        Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
+                        moveToLoginFragment()
+                    }
+                    is Error -> {
+                        binding.btnSignUp.isEnabled = true
+                        Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
+            }
         }
     }
 
@@ -166,6 +152,14 @@ class RegisterFragment : Fragment() {
     private fun moveToLoginFragment() {
         val fragmentManager = parentFragmentManager
         fragmentManager.popBackStack()
+    }
+
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

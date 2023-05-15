@@ -1,25 +1,26 @@
 package com.dicoding.storyapp.data.local.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.dicoding.storyapp.data.local.entity.StoryEntity
 
 @Dao
 interface StoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(story: StoryEntity)
+    @Query("SELECT * FROM stories ORDER BY createdAt DESC")
+    fun getAllStories(): LiveData<List<StoryEntity>>
 
-    @Delete
-    fun delete(story: StoryEntity)
+    @Query("SELECT * FROM stories where isBookmarked = 1")
+    fun getBookmarkedStories(): LiveData<List<StoryEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertStory(stories: List<StoryEntity>)
 
     @Update
-    fun update(story: StoryEntity)
+    fun updateStory(stories: StoryEntity)
 
-    @Query("SELECT * FROM stories")
-    fun getAllStories(): LiveData<List<StoryEntity>>
+    @Query("DELETE FROM stories WHERE isBookmarked = 0")
+    fun deleteAll()
+
+    @Query("SELECT EXISTS(SELECT * FROM stories WHERE id = :id AND isBookmarked = 1)")
+    fun isStoryBookmarked(id: String): Boolean
 }

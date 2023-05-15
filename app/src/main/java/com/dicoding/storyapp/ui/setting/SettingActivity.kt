@@ -1,5 +1,6 @@
 package com.dicoding.storyapp.ui.setting
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivitySettingBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.main.MainActivity
 
 class SettingActivity : AppCompatActivity() {
 
@@ -28,6 +30,33 @@ class SettingActivity : AppCompatActivity() {
 
         setupViewModel()
         initTheme()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[SettingViewModel::class.java]
+    }
+
+    private fun initTheme() {
+        executeGetThemeSetting()
+
+        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            viewModel.saveThemeSetting(isChecked)
+        }
+    }
+
+    private fun executeGetThemeSetting() {
+        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.switchTheme.isChecked = true
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.switchTheme.isChecked = false
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -58,41 +87,21 @@ class SettingActivity : AppCompatActivity() {
         builder.setTitle("Logout")
             .setMessage("Are you serious?")
             .setPositiveButton("OK") { _, _ ->
-                run {
-                    viewModel.deleteLogin()
-                    finish()
-                }
+                viewModel.deleteLogin()
+                directToMainActivity()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
             }
 
         val alert = builder.create()
         alert.show()
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[SettingViewModel::class.java]
-    }
-
-    private fun initTheme() {
-        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.switchTheme.isChecked = false
-            }
-        }
-
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
+    private fun directToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 }

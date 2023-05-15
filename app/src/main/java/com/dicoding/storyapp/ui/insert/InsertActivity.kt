@@ -27,12 +27,12 @@ import com.dicoding.storyapp.ui.camera.CameraActivity
 import com.dicoding.storyapp.helper.reduceFileImage
 import com.dicoding.storyapp.helper.rotateFile
 import com.dicoding.storyapp.helper.uriToFile
+import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import java.io.File
 
 class InsertActivity : AppCompatActivity() {
@@ -68,7 +68,7 @@ class InsertActivity : AppCompatActivity() {
             myFile?.let { file ->
                 rotateFile(file, isBackCamera)
                 getFile = file
-                binding.ivStoryImage.setImageBitmap(BitmapFactory.decodeFile(file.path))
+                binding.ivItemImage.setImageBitmap(BitmapFactory.decodeFile(file.path))
             }
         }
     }
@@ -81,7 +81,7 @@ class InsertActivity : AppCompatActivity() {
             selectedImg.let { uri ->
                 val myFile = uriToFile(uri, this@InsertActivity)
                 getFile = myFile
-                binding.ivStoryImage.setImageURI(uri)
+                binding.ivItemImage.setImageURI(uri)
             }
         }
     }
@@ -97,7 +97,7 @@ class InsertActivity : AppCompatActivity() {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
                     this,
-                    "Don't have permission.",
+                    "Don't have permission to access camera",
                     Toast.LENGTH_SHORT
                 ).show()
                 finish()
@@ -110,7 +110,7 @@ class InsertActivity : AppCompatActivity() {
         binding = ActivityInsertBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "Add New Story"
+        supportActionBar?.elevation = 0f
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (!allPermissionsGranted()) {
@@ -122,13 +122,24 @@ class InsertActivity : AppCompatActivity() {
         }
 
         setupViewModel()
+        setupSupportActionBarTitle()
         setupAction()
     }
 
     private fun setupAction() {
         binding.btnCameraX.setOnClickListener { startCameraX() }
         binding.btnGallery.setOnClickListener { startGallery() }
-        binding.btnUpload.setOnClickListener { uploadStory() }
+        binding.btnAdd.setOnClickListener { addNewStory() }
+    }
+
+    private fun setupSupportActionBarTitle() {
+        viewModel.getLogin().observe(this) { user ->
+            if (user.token.isNotBlank()) {
+                supportActionBar?.title = "Add New Story"
+            } else {
+                supportActionBar?.title = "Add New Story (Guest)"
+            }
+        }
     }
 
     private fun setupViewModel() {
@@ -136,10 +147,6 @@ class InsertActivity : AppCompatActivity() {
             this,
             ViewModelFactory.getInstance(this)
         )[InsertViewModel::class.java]
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun startCameraX() {
@@ -154,27 +161,27 @@ class InsertActivity : AppCompatActivity() {
         launcherIntentGallery.launch(chooser)
     }
 
-    private fun uploadStory() {
-        val description = binding.edStoryDescription.text.toString()
+    private fun addNewStory() {
+        val edAddDescription = binding.edAddDescription.text.toString()
 
         when {
             getFile == null -> {
                 Toast.makeText(
                     this@InsertActivity,
-                    "Please insert the image file first",
+                    "Please insert the image first",
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            description.isEmpty() -> {
+            edAddDescription.isEmpty() -> {
                 Toast.makeText(
                     this@InsertActivity,
-                    "Please fill the image description first",
+                    "Please fill the description first",
                     Toast.LENGTH_SHORT
                 ).show()
             }
             else -> {
                 val file = reduceFileImage(getFile as File)
-                val desc = description.toRequestBody("text/plain".toMediaType())
+                val description = edAddDescription.toRequestBody("text/plain".toMediaType())
                 val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "photo",
@@ -182,16 +189,74 @@ class InsertActivity : AppCompatActivity() {
                     requestImageFile
                 )
 
-                showAddNewStoryDialog(desc, imageMultipart)
+                showAddNewStoryDialog(description, imageMultipart)
             }
         }
     }
 
+    private fun showAddNewStoryDialog(desc: RequestBody, photo: MultipartBody.Part) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add new story")
+            .setMessage("Are you sure?")
+            .setPositiveButton("OK") { _, _ ->
+                viewModel.getLogin().observe(this) { user ->
+                    executeAddNewStory(user.token, desc, photo)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    private fun executeAddNewStory(token: String, desc: RequestBody, photo: MultipartBody.Part) {
+        viewModel.addNewStory(NewStoryRequest(token, desc, photo)).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.btnCameraX.isEnabled = false
+                        binding.btnGallery.isEnabled = false
+                        binding.btnAdd.isEnabled = false
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.btnCameraX.isEnabled = true
+                        binding.btnGallery.isEnabled = true
+                        binding.btnAdd.isEnabled = true
+
+                        Toast.makeText(
+                            this,
+                            "Add new story success",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    }
+                    is Result.Error -> {
+                        binding.btnCameraX.isEnabled = true
+                        binding.btnGallery.isEnabled = true
+                        binding.btnAdd.isEnabled = true
+
+                        Toast.makeText(
+                            this,
+                            "Add new story failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         viewModel.getLogin().observe(this) { user ->
-            if (user.token.isNotBlank()) {
-                menuInflater.inflate(R.menu.option_menu_3, menu)
-            }
+            if (user.token.isNotBlank()) menuInflater.inflate(R.menu.option_menu_3, menu)
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -213,67 +278,23 @@ class InsertActivity : AppCompatActivity() {
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Logout")
-            .setMessage("Are you serious?")
+            .setMessage("Are you sure?")
             .setPositiveButton("OK") { _, _ ->
-                run {
-                    viewModel.deleteLogin()
-                    finish()
-                }
+                viewModel.deleteLogin()
+                directToMainActivity()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
             }
 
         val alert = builder.create()
         alert.show()
     }
 
-    private fun showAddNewStoryDialog(desc: RequestBody, photo: MultipartBody.Part) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Add new story")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
-                viewModel.getLogin().observe(this) { user ->
-                    viewModel.addNewStory(NewStoryRequest(
-                        user.token,
-                        desc,
-                        photo)
-                    ).observe(this) { result ->
-                        if (result != null) {
-                            when (result) {
-                                is Result.Loading -> {
-                                    binding.progressBar.visibility = View.VISIBLE
-                                }
-                                is Result.Success -> {
-                                    binding.progressBar.visibility = View.GONE
-                                    Toast.makeText(
-                                        this,
-                                        "Add new story success",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    finish()
-                                }
-                                is Result.Error -> {
-                                    Toast.makeText(
-                                        this,
-                                        "Add new story failed",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                run {
-                    dialog.dismiss()
-                }
-            }
-
-        val alert = builder.create()
-        alert.show()
+    private fun directToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 }
