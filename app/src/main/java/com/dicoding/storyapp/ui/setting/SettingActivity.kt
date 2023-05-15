@@ -25,11 +25,21 @@ class SettingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.elevation = 0f
-        supportActionBar?.title = "Setting"
+        supportActionBar?.setTitle(R.string.setting)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupViewModel()
         initTheme()
+    }
+
+    private fun initTheme() {
+        binding.apply {
+            executeGetThemeSetting()
+
+            switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                viewModel.saveThemeSetting(isChecked)
+            }
+        }
     }
 
     private fun setupViewModel() {
@@ -39,22 +49,18 @@ class SettingActivity : AppCompatActivity() {
         )[SettingViewModel::class.java]
     }
 
-    private fun initTheme() {
-        executeGetThemeSetting()
-
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
-    }
-
     private fun executeGetThemeSetting() {
-        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.switchTheme.isChecked = false
+        binding.apply {
+            viewModel.getThemeSetting().observe(
+                this@SettingActivity
+            ) {isDarkModeActive: Boolean ->
+                if (isDarkModeActive) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    switchTheme.isChecked = true
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    switchTheme.isChecked = false
+                }
             }
         }
     }
@@ -74,7 +80,7 @@ class SettingActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -84,13 +90,13 @@ class SettingActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

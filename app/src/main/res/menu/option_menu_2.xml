@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_insert"
-        android:title="@string/insert"
+        android:title="@string/add_new_story"
         android:icon="@drawable/baseline_add_box_24"
         app:showAsAction="always" />
     <item android:id="@+id/menu_setting"
         android:title="@string/setting"
         android:icon="@drawable/baseline_settings_24"
         app:showAsAction="always" />
-    <item android:id="@+id/menu_logout"
-        android:title="@string/logout"
+    <item android:id="@+id/menu_sign_out"
+        android:title="@string/sign_out"
         android:icon="@drawable/baseline_logout_24"
         app:showAsAction="always" />
 </menu>

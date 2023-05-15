@@ -25,17 +25,6 @@ class MainActivity : AppCompatActivity() {
         setupFragment()
     }
 
-    private fun initTheme() {
-        viewModel.getThemeSetting()
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[MainViewModel::class.java]
-    }
-
     private fun setupFragment() {
         viewModel.getLogin().observe(this) { user ->
             if (user.token.isNotBlank()) {
@@ -44,11 +33,6 @@ class MainActivity : AppCompatActivity() {
                 addLoginFragment()
             }
         }
-    }
-
-    private fun directToHomeActivity() {
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
     }
 
     private fun addLoginFragment() {
@@ -63,5 +47,22 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.frame_container, loginFragment, LoginFragment::class.java.simpleName)
                 .commit()
         }
+    }
+
+    private fun directToHomeActivity() {
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
+    }
+
+    private fun initTheme() {
+        viewModel.getThemeSetting()
+    }
+
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[MainViewModel::class.java]
     }
 }

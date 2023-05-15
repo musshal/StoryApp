@@ -33,19 +33,43 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.elevation = 0f
-        supportActionBar?.title = "Detail Story"
+        supportActionBar?.setTitle(R.string.detail_story)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
 
-        setupViewModel()
-        setupAction(story!!)
+        if (story != null) {
+            setupViewModel()
+            setupAction(story)
+        }
     }
 
     private fun setupAction(story: StoryEntity) {
         fabBookmarkAction(story)
+
         viewModel.getLogin().observe(this) { user ->
             executeGetDetailStory(user.token, story.id)
+        }
+    }
+
+    private fun executeGetDetailStory(token: String, id: String) {
+        viewModel.getDetailStory(token, id).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.fabDetailSaveBookmark.visibility = View.VISIBLE
+
+                        setData(result.data.story)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -76,27 +100,6 @@ class DetailActivity : AppCompatActivity() {
                         this@DetailActivity,
                         R.drawable.baseline_bookmark_48
                     ))
-                }
-            }
-        }
-    }
-
-    private fun executeGetDetailStory(token: String, id: String) {
-        viewModel.getDetailStory(token, id).observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.fabDetailSaveBookmark.visibility = View.VISIBLE
-
-                        setData(result.data.story)
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
                 }
             }
         }
@@ -133,7 +136,7 @@ class DetailActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -143,13 +146,13 @@ class DetailActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

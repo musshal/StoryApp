@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +25,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var viewModel: HomeViewModel
 
+    private var backPressedTime: Long = 0
+    private val BACK_PRESSED_INTERVAL = 2000
+
     companion object {
         @StringRes
         private val TAB_TITLES = intArrayOf(R.string.home, R.string.bookmark)
@@ -37,6 +42,32 @@ class HomeActivity : AppCompatActivity() {
 
         setupSectionsPagerAdapter()
         setupViewModel()
+        setupAction()
+    }
+
+    private fun setupAction() {
+        this.onBackPressedDispatcher.addCallback(this, object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
+                    this@HomeActivity.finish()
+                } else {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        R.string.press_back_again_to_exit,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(this)
+        )[HomeViewModel::class.java]
     }
 
     private fun setupSectionsPagerAdapter() {
@@ -45,13 +76,6 @@ class HomeActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(this)
-        )[HomeViewModel::class.java]
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,7 +93,7 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this, SettingActivity::class.java))
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -79,13 +103,13 @@ class HomeActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

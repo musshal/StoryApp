@@ -14,6 +14,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityCameraBinding
 import com.dicoding.storyapp.helper.createFile
 import com.dicoding.storyapp.ui.insert.InsertActivity
@@ -71,7 +72,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
                         this@CameraActivity,
-                        "Failed to capture an image.",
+                        R.string.failed_to_capture_an_image,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -116,7 +117,7 @@ class CameraActivity : AppCompatActivity() {
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@CameraActivity,
-                    "Failed to open camera",
+                    R.string.failed_to_open_camera,
                     Toast.LENGTH_SHORT
                 ).show()
             }

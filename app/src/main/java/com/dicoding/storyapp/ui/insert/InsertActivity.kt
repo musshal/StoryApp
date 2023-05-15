@@ -97,7 +97,7 @@ class InsertActivity : AppCompatActivity() {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
                     this,
-                    "Don't have permission to access camera",
+                    R.string.don_t_have_permission_to_access_camera,
                     Toast.LENGTH_SHORT
                 ).show()
                 finish()
@@ -135,9 +135,9 @@ class InsertActivity : AppCompatActivity() {
     private fun setupSupportActionBarTitle() {
         viewModel.getLogin().observe(this) { user ->
             if (user.token.isNotBlank()) {
-                supportActionBar?.title = "Add New Story"
+                supportActionBar?.setTitle(R.string.add_new_story)
             } else {
-                supportActionBar?.title = "Add New Story (Guest)"
+                supportActionBar?.setTitle(R.string.add_new_story_guest)
             }
         }
     }
@@ -157,7 +157,7 @@ class InsertActivity : AppCompatActivity() {
         val intent = Intent()
         intent.action = ACTION_GET_CONTENT
         intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
+        val chooser = Intent.createChooser(intent, R.string.choose_a_picture.toString())
         launcherIntentGallery.launch(chooser)
     }
 
@@ -168,14 +168,14 @@ class InsertActivity : AppCompatActivity() {
             getFile == null -> {
                 Toast.makeText(
                     this@InsertActivity,
-                    "Please insert the image first",
+                    R.string.please_insert_the_image_first,
                     Toast.LENGTH_SHORT
                 ).show()
             }
             edAddDescription.isEmpty() -> {
                 Toast.makeText(
                     this@InsertActivity,
-                    "Please fill the description first",
+                    R.string.please_fill_the_description_first,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -196,14 +196,14 @@ class InsertActivity : AppCompatActivity() {
 
     private fun showAddNewStoryDialog(desc: RequestBody, photo: MultipartBody.Part) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Add new story")
-            .setMessage("Are you sure?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.add_new_story)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.getLogin().observe(this) { user ->
                     executeAddNewStory(user.token, desc, photo)
                 }
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 
@@ -229,7 +229,7 @@ class InsertActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this,
-                            "Add new story success",
+                            R.string.add_new_story_success,
                             Toast.LENGTH_SHORT
                         ).show()
                         finish()
@@ -241,7 +241,7 @@ class InsertActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this,
-                            "Add new story failed",
+                            R.string.add_new_story_failed,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -267,7 +267,7 @@ class InsertActivity : AppCompatActivity() {
                 finish()
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -277,13 +277,13 @@ class InsertActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you sure?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

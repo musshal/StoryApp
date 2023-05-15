@@ -15,6 +15,7 @@ class BookmarkFragment : Fragment() {
 
     private lateinit var binding: FragmentBookmarkBinding
     private lateinit var viewModel: HomeViewModel
+    private lateinit var storiesAdapter: StoriesAdapter
 
 
     override fun onCreateView(
@@ -28,48 +29,46 @@ class BookmarkFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val storyAdapter = StoriesAdapter { story ->
-            if (story.isBookmarked) {
-                viewModel.deleteStory(story)
-            } else {
-                viewModel.saveStory(story)
-            }
-        }
-
+        setupAdapter()
         setupViewModel()
-        setupData(storyAdapter)
-
-        setData(storyAdapter)
+        setupData()
+        setData()
     }
-
-    private fun setData(storyAdapter: StoriesAdapter) {
-        binding.rvStories.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = storyAdapter
-        }
-    }
-
-    private fun setupData(storyAdapter: StoriesAdapter) {
-        viewModel.getBookmarkedStories().observe(viewLifecycleOwner) { bookmarkedStory ->
-            binding.progressBar.visibility = View.GONE
-            storyAdapter.submitList(bookmarkedStory)
-        }
-
-    }
-
-//    private fun setData(storiesAdapter: StoriesAdapter) {
-//        binding.rvStories.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            setHasFixedSize(true)
-//            adapter = storiesAdapter
-//        }
-//    }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(requireContext())
         )[HomeViewModel::class.java]
+    }
+
+    private fun setupAdapter() {
+        storiesAdapter = StoriesAdapter { story ->
+            if (story.isBookmarked) {
+                viewModel.deleteStory(story)
+            } else {
+                viewModel.saveStory(story)
+            }
+        }
+    }
+
+    private fun setupData() {
+        viewModel.getBookmarkedStories().observe(viewLifecycleOwner) { bookmarkedStory ->
+            if (bookmarkedStory.isEmpty()) {
+                binding.tvMessage.visibility = View.VISIBLE
+                storiesAdapter.submitList(bookmarkedStory)
+            } else {
+                binding.tvMessage.visibility = View.GONE
+                storiesAdapter.submitList(bookmarkedStory)
+            }
+        }
+    }
+
+    private fun setData() {
+        binding.rvStories.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = storiesAdapter
+        }
     }
 }

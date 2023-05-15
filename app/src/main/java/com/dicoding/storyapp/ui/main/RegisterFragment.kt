@@ -41,27 +41,29 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
         setupAction()
         playAnimation()
-
-        return binding.root
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(requireContext())
-        )[MainViewModel::class.java]
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
     }
 
     private fun setupAction() {
         binding.apply {
             edRegisterPassword.apply {
-                setOnEditorActionListener { _, actionId, _ ->
-                    clearFocusOnDoneAction(actionId)
-                }
+                setOnEditorActionListener { _, actionId, _ -> clearFocusOnDoneAction(actionId) }
             }
 
             cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
@@ -75,91 +77,110 @@ class RegisterFragment : Fragment() {
                 val email = edRegisterEmail.text.toString()
                 val password = edRegisterPassword.text.toString()
 
-                when {
-                    name.isEmpty() -> {
-                        edRegisterName.error = "Masukkan name"
-                    }
-                    email.isEmpty() -> {
-                        edRegisterEmail.error = "Masukkan email"
-                    }
-                    password.isEmpty() -> {
-                        edRegisterPassword.error = "Masukkan password"
-                    }
-                    password.length < 8 -> {
-                        edRegisterPassword.error = "Password must be at least 8 character"
-                    }
-                    else -> {
-                        executeRegister(name, email, password)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun executeRegister(name: String, email: String, password: String) {
-        viewModel.register(RegisterRequest(name, email, password)).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when (result) {
-                    is Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.btnSignUp.isEnabled = false
-                    }
-                    is Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.btnSignUp.isEnabled = true
-                        Toast.makeText(context, "Create an account success", Toast.LENGTH_SHORT).show()
-                        moveToLoginFragment()
-                    }
-                    is Error -> {
-                        binding.btnSignUp.isEnabled = true
-                        Toast.makeText(context, "Create an account failed", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                register(name, email, password)
             }
         }
     }
 
     private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
-        val imm = requireContext().getSystemService(
-            Context.INPUT_METHOD_SERVICE
-        ) as InputMethodManager
+        binding.apply {
+            val imm = requireContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager
 
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            binding.edRegisterPassword.clearFocus()
-            binding.edRegisterPassword.error = null
-            imm.hideSoftInputFromWindow(binding.edRegisterPassword.windowToken, 0)
-            return true
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                edRegisterPassword.clearFocus()
+                edRegisterPassword.error = null
+                imm.hideSoftInputFromWindow(edRegisterPassword.windowToken, 0)
+                return true
+            }
+
+            return false
         }
-
-        return false
     }
 
     private fun toggleLoginPasswordVisibility(isChecked: Boolean) {
-        val selection = binding.edRegisterPassword.selectionEnd
+        binding.apply {
+            val selection = edRegisterPassword.selectionEnd
 
-        if (isChecked) {
-            binding.edRegisterPassword.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        } else {
-            binding.edRegisterPassword.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (isChecked) {
+                edRegisterPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                edRegisterPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+
+            edRegisterPassword.setSelection(selection)
+            edRegisterPassword.error = null
         }
+    }
 
-        binding.edRegisterPassword.setSelection(selection)
-        binding.edRegisterPassword.error = null
+    private fun register(name: String, email: String, password: String) {
+        binding.apply {
+            when {
+                name.isEmpty() -> {
+                    edRegisterName.error = R.string.please_fill_your_name.toString()
+                }
+                email.isEmpty() -> {
+                    edRegisterEmail.error = R.string.please_fill_the_email.toString()
+                }
+                password.isEmpty() -> {
+                    edRegisterPassword.error = R.string.please_fill_the_password.toString()
+                }
+                password.length < 8 -> {
+                    edRegisterPassword.error = R.string.password_must_be_at_least_8_character.toString()
+                }
+                else -> {
+                    executeRegister(name, email, password)
+                }
+            }
+        }
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(requireContext())
+        )[MainViewModel::class.java]
+    }
+
+    private fun executeRegister(name: String, email: String, password: String) {
+        binding.apply {
+            viewModel.register(
+                RegisterRequest(name, email, password)
+            ).observe(viewLifecycleOwner) { result ->
+                if (result != null) {
+                    when (result) {
+                        is Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                            btnSignUp.isEnabled = false
+                        }
+                        is Success -> {
+                            progressBar.visibility = View.GONE
+                            btnSignUp.isEnabled = true
+                            Toast.makeText(context,
+                                R.string.create_an_account_success,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            moveToLoginFragment()
+                        }
+                        is Error -> {
+                            btnSignUp.isEnabled = true
+                            Toast.makeText(context,
+                                R.string.create_an_account_failed,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun moveToLoginFragment() {
         val fragmentManager = parentFragmentManager
         fragmentManager.popBackStack()
-    }
-
-    private fun playAnimation() {
-        ObjectAnimator.ofFloat(binding.ivAccount, View.TRANSLATION_X, -30f, 30f).apply {
-            duration = 6000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
