@@ -32,18 +32,18 @@ class HomeFragment : Fragment() {
 
         setupAdapter()
         setupViewModel()
-        setupData(storiesAdapter)
-        setData(storiesAdapter)
+        setupData()
+        setData()
         setupAction()
     }
 
     private fun setupAction() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            myUpdateOperation(storiesAdapter)
+            setupData()
         }
     }
 
-    private fun setData(storiesAdapter: StoriesAdapter) {
+    private fun setData() {
         binding.rvStories.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -51,17 +51,17 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupData(storiesAdapter: StoriesAdapter) {
+    private fun setupData() {
         viewModel.getLogin().observe(viewLifecycleOwner) { user ->
             if (user.token.isNotBlank()) {
-                executeGetAllStories(user.token, storiesAdapter)
+                executeGetAllStories(user.token)
             }
         }
 
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun executeGetAllStories(token: String, storiesAdapter: StoriesAdapter) {
+    private fun executeGetAllStories(token: String) {
         viewModel.getAllStories(token).observe(viewLifecycleOwner) { result ->
             if (result != null) {
                 when (result) {
@@ -95,9 +95,5 @@ class HomeFragment : Fragment() {
                 viewModel.saveStory(story)
             }
         }
-    }
-
-    private fun myUpdateOperation(storiesAdapter: StoriesAdapter) {
-        setupData(storiesAdapter)
     }
 }

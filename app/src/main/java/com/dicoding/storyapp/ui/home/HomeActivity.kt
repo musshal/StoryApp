@@ -45,12 +45,22 @@ class HomeActivity : AppCompatActivity() {
         setupAction()
     }
 
-    private fun setupSectionsPagerAdapter() {
-        val sectionsPagerAdapter = SectionsPagerAdapter(this)
-        binding.viewPager.adapter = sectionsPagerAdapter
-        TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
-            tab.text = resources.getString(TAB_TITLES[position])
-        }.attach()
+    private fun setupAction() {
+        this.onBackPressedDispatcher.addCallback(this, object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
+                    this@HomeActivity.finish()
+                } else {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        "Press back again to exit",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
     }
 
     private fun setupViewModel() {
@@ -60,17 +70,12 @@ class HomeActivity : AppCompatActivity() {
         )[HomeViewModel::class.java]
     }
 
-    private fun setupAction() {
-        this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
-                    this@HomeActivity.finish()
-                } else {
-                    Toast.makeText(this@HomeActivity, "Press back again to exit", Toast.LENGTH_SHORT).show()
-                }
-                backPressedTime = System.currentTimeMillis()
-            }
-        })
+    private fun setupSectionsPagerAdapter() {
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
+        binding.viewPager.adapter = sectionsPagerAdapter
+        TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
+            tab.text = resources.getString(TAB_TITLES[position])
+        }.attach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

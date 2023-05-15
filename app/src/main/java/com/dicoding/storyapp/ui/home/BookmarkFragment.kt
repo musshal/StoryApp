@@ -31,8 +31,8 @@ class BookmarkFragment : Fragment() {
 
         setupViewModel()
         setupAdapter()
-        setupData(storiesAdapter)
-        setData(storiesAdapter)
+        setupData()
+        setData()
     }
 
     private fun setupViewModel() {
@@ -52,7 +52,7 @@ class BookmarkFragment : Fragment() {
         }
     }
 
-    private fun setupData(storiesAdapter: StoriesAdapter) {
+    private fun setupData() {
         viewModel.getBookmarkedStories().observe(viewLifecycleOwner) { bookmarkedStory ->
             if (bookmarkedStory.isEmpty()) {
                 binding.tvMessage.visibility = View.VISIBLE
@@ -64,7 +64,7 @@ class BookmarkFragment : Fragment() {
         }
     }
 
-    private fun setData(storiesAdapter: StoriesAdapter) {
+    private fun setData() {
         binding.rvStories.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)

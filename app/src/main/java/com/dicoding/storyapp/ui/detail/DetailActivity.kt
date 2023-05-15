@@ -49,6 +49,27 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun executeGetDetailStory(token: String, id: String) {
+        viewModel.getDetailStory(token, id).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.fabDetailSaveBookmark.visibility = View.VISIBLE
+
+                        setData(result.data.story)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
     private fun fabBookmarkAction(story: StoryEntity) {
         binding.apply {
             if (story.isBookmarked) {
@@ -76,27 +97,6 @@ class DetailActivity : AppCompatActivity() {
                         this@DetailActivity,
                         R.drawable.baseline_bookmark_48
                     ))
-                }
-            }
-        }
-    }
-
-    private fun executeGetDetailStory(token: String, id: String) {
-        viewModel.getDetailStory(token, id).observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.fabDetailSaveBookmark.visibility = View.VISIBLE
-
-                        setData(result.data.story)
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
                 }
             }
         }
