@@ -7,11 +7,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.entity.StoryEntity
-import com.dicoding.storyapp.data.remote.response.StoryResponse
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -38,12 +39,45 @@ class DetailActivity : AppCompatActivity() {
         val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
 
         setupViewModel()
-        setupAction(story)
+        setupAction(story!!)
     }
 
-    private fun setupAction(story: StoryEntity?) {
+    private fun setupAction(story: StoryEntity) {
+        fabBookmarkAction(story)
         viewModel.getLogin().observe(this) { user ->
-            if (story != null) executeGetDetailStory(user.token, story.id)
+            executeGetDetailStory(user.token, story.id)
+        }
+    }
+
+    private fun fabBookmarkAction(story: StoryEntity) {
+        binding.apply {
+            if (story.isBookmarked) {
+                fabDetailSaveBookmark.setImageDrawable(ContextCompat.getDrawable(
+                    this@DetailActivity,
+                    R.drawable.baseline_bookmark_48
+                ))
+            } else {
+                fabDetailSaveBookmark.setImageDrawable(ContextCompat.getDrawable(
+                    this@DetailActivity,
+                    R.drawable.baseline_bookmark_border_48
+                ))
+            }
+
+            fabDetailSaveBookmark.setOnClickListener {
+                if (story.isBookmarked) {
+                    viewModel.deleteStory(story)
+                    fabDetailSaveBookmark.setImageDrawable(ContextCompat.getDrawable(
+                        this@DetailActivity,
+                        R.drawable.baseline_bookmark_border_48
+                    ))
+                } else {
+                    viewModel.saveStory(story)
+                    fabDetailSaveBookmark.setImageDrawable(ContextCompat.getDrawable(
+                        this@DetailActivity,
+                        R.drawable.baseline_bookmark_48
+                    ))
+                }
+            }
         }
     }
 

@@ -1,11 +1,11 @@
-package com.dicoding.storyapp.data.remote.retrofit
+package com.dicoding.storyapp.data.source.remote.retrofit
 
-import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.request.RegisterRequest
-import com.dicoding.storyapp.data.remote.response.AllStoriesResponse
-import com.dicoding.storyapp.data.remote.response.DetailStoryResponse
-import com.dicoding.storyapp.data.remote.response.LoginResponse
-import com.dicoding.storyapp.data.remote.response.MessageResponse
+import com.dicoding.storyapp.data.source.remote.request.LoginRequest
+import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.source.remote.response.AllStoriesResponse
+import com.dicoding.storyapp.data.source.remote.response.DetailStoryResponse
+import com.dicoding.storyapp.data.source.remote.response.LoginResponse
+import com.dicoding.storyapp.data.source.remote.response.MessageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body

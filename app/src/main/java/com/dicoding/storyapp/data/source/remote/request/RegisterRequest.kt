@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.remote.request
+package com.dicoding.storyapp.data.source.remote.request
 
 data class RegisterRequest(
     val name: String,

@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.remote.retrofit
+package com.dicoding.storyapp.data.source.remote.retrofit
 
 import com.dicoding.storyapp.BuildConfig
 import okhttp3.OkHttpClient

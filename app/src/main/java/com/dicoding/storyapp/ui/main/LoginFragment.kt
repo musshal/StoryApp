@@ -18,9 +18,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.entity.UserEntity
-import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.response.LoginResultResponse
+import com.dicoding.storyapp.data.source.local.entity.UserEntity
+import com.dicoding.storyapp.data.source.remote.request.LoginRequest
+import com.dicoding.storyapp.data.source.remote.response.LoginResultResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory

@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
 import com.dicoding.storyapp.data.repository.Result.Loading
 import com.dicoding.storyapp.data.repository.Result.Success
 import com.dicoding.storyapp.data.repository.Result.Error

@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.dicoding.storyapp.data.local.datastore.SettingPreferences
-import com.dicoding.storyapp.data.local.entity.UserEntity
-import com.dicoding.storyapp.data.local.datastore.UserPreferences
-import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.source.local.datastore.SettingPreferences
+import com.dicoding.storyapp.data.source.local.entity.UserEntity
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
+import com.dicoding.storyapp.data.source.remote.request.LoginRequest
+import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
 import com.dicoding.storyapp.data.repository.UserRepository
 import kotlinx.coroutines.launch
 
