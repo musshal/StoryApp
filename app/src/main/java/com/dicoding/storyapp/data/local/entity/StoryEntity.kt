@@ -4,14 +4,13 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = "stories")
 @Parcelize
+@Entity(tableName = "stories")
 class StoryEntity(
     @field:ColumnInfo(name = "id")
-    @field:PrimaryKey
+    @field:PrimaryKey(autoGenerate = false)
     val id: String,
 
     @field:ColumnInfo(name = "name")
@@ -26,9 +25,6 @@ class StoryEntity(
     @field:ColumnInfo(name = "createdAt")
     val createdAt: String,
 
-    @field:SerializedName("lat")
-    val lat: Float? = null,
-
-    @field:SerializedName("lon")
-    val lon: Float? = null
+    @field:ColumnInfo(name = "isBookmarked")
+    var isBookmarked: Boolean
 ) : Parcelable

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.storyapp.data.local.entity.StoryEntity
 import com.dicoding.storyapp.data.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
@@ -28,21 +29,28 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        setupViewModel()
-        setupData()
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            myUpdateOperation()
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val storyAdapter = StoriesAdapter { story ->
+            if (story.isBookmarked) {
+                viewModel.deleteStory(story)
+            } else {
+                viewModel.saveStory(story)
+            }
+        }
+
+        setupViewModel()
+        setupData(storyAdapter)
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            myUpdateOperation(storyAdapter)
+        }
 
         setupAction()
+        setData(storyAdapter)
     }
 
     private fun setupViewModel() {
@@ -52,17 +60,17 @@ class HomeFragment : Fragment() {
         )[HomeViewModel::class.java]
     }
 
-    private fun setupData() {
+    private fun setupData(storiesAdapter: StoriesAdapter) {
         viewModel.getLogin().observe(viewLifecycleOwner) { user ->
             if (user.token.isNotBlank()) {
-                executeGetAllStories(user.token)
+                executeGetAllStories(user.token, storiesAdapter)
             }
         }
 
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun executeGetAllStories(token: String) {
+    private fun executeGetAllStories(token: String, storyAdapter: StoriesAdapter) {
         viewModel.getAllStories(token).observe(viewLifecycleOwner) { result ->
             if (result != null) {
                 when (result) {
@@ -71,8 +79,7 @@ class HomeFragment : Fragment() {
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-
-                        setData(result.data.listStory)
+                        storyAdapter.submitList(result.data)
                     }
                     is Result.Error -> {
                         Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
@@ -82,13 +89,16 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setData(listStory: ArrayList<StoryResponse>) {
-        binding.rvStories.adapter = StoriesAdapter(listStory)
-        binding.rvStories.layoutManager = LinearLayoutManager(context)
+    private fun setData(storyAdapter: StoriesAdapter) {
+        binding.rvStories.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = storyAdapter
+        }
     }
 
-    private fun myUpdateOperation() {
-        setupData()
+    private fun myUpdateOperation(storiesAdapter: StoriesAdapter) {
+        setupData(storiesAdapter)
     }
 
     private fun setupAction() {

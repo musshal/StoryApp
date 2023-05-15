@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.dicoding.storyapp.data.local.datastore.SettingPreferences
 import com.dicoding.storyapp.data.local.datastore.UserPreferences
+import com.dicoding.storyapp.data.local.room.StoryDatabase
 import com.dicoding.storyapp.data.remote.retrofit.ApiConfig
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
+import com.dicoding.storyapp.helper.AppExecutors
 
 object Injection {
 
@@ -34,5 +36,11 @@ object Injection {
 
     fun provideUserRepository() : UserRepository = UserRepository.getInstance(apiService)
 
-    fun provideStoryRepository() : StoryRepository = StoryRepository.getInstance(apiService)
+    fun provideStoryRepository(context: Context) : StoryRepository{
+        val database = StoryDatabase.getInstance(context)
+        val storyDao = database.storyDao()
+        val appExecutors = AppExecutors()
+
+        return StoryRepository.getInstance(apiService, storyDao, appExecutors)
+    }
 }

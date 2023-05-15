@@ -31,7 +31,7 @@ class ViewModelFactory(
                     Injection.provideUserPreferences(context),
                     Injection.provideSettingPreferences(context),
                     Injection.provideUserRepository(),
-                    Injection.provideStoryRepository()
+                    Injection.provideStoryRepository(context)
                 )
             }.also { instance = it }
     }

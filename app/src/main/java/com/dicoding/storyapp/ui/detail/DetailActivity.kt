@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
+import com.dicoding.storyapp.data.local.entity.StoryEntity
 import com.dicoding.storyapp.data.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
@@ -34,13 +35,13 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.title = "Detail Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val story = intent.getParcelableExtra(EXTRA_STORY) as StoryResponse?
+        val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
 
         setupViewModel()
         setupAction(story)
     }
 
-    private fun setupAction(story: StoryResponse?) {
+    private fun setupAction(story: StoryEntity?) {
         viewModel.getLogin().observe(this) { user ->
             if (story != null) executeGetDetailStory(user.token, story.id)
         }
