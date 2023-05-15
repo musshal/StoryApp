@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.storyapp.data.repository.Result
@@ -18,9 +17,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
-
-    private var backPressedTime: Long = 0
-    private val BACK_PRESSED_INTERVAL = 2000
+    private lateinit var storiesAdapter: StoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,30 +29,26 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val storyAdapter = StoriesAdapter { story ->
-            if (story.isBookmarked) {
-                viewModel.deleteStory(story)
-            } else {
-                viewModel.saveStory(story)
-            }
-        }
 
+        setupAdapter()
         setupViewModel()
-        setupData(storyAdapter)
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            myUpdateOperation(storyAdapter)
-        }
-
+        setupData(storiesAdapter)
+        setData(storiesAdapter)
         setupAction()
-        setData(storyAdapter)
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(requireContext())
-        )[HomeViewModel::class.java]
+    private fun setupAction() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            myUpdateOperation(storiesAdapter)
+        }
+    }
+
+    private fun setData(storiesAdapter: StoriesAdapter) {
+        binding.rvStories.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = storiesAdapter
+        }
     }
 
     private fun setupData(storiesAdapter: StoriesAdapter) {
@@ -68,7 +61,7 @@ class HomeFragment : Fragment() {
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun executeGetAllStories(token: String, storyAdapter: StoriesAdapter) {
+    private fun executeGetAllStories(token: String, storiesAdapter: StoriesAdapter) {
         viewModel.getAllStories(token).observe(viewLifecycleOwner) { result ->
             if (result != null) {
                 when (result) {
@@ -77,7 +70,7 @@ class HomeFragment : Fragment() {
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        storyAdapter.submitList(result.data)
+                        storiesAdapter.submitList(result.data)
                     }
                     is Result.Error -> {
                         Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
@@ -87,28 +80,24 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setData(storyAdapter: StoriesAdapter) {
-        binding.rvStories.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = storyAdapter
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(requireContext())
+        )[HomeViewModel::class.java]
+    }
+
+    private fun setupAdapter() {
+        storiesAdapter = StoriesAdapter { story ->
+            if (story.isBookmarked) {
+                viewModel.deleteStory(story)
+            } else {
+                viewModel.saveStory(story)
+            }
         }
     }
 
     private fun myUpdateOperation(storiesAdapter: StoriesAdapter) {
         setupData(storiesAdapter)
-    }
-
-    private fun setupAction() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
-                    requireActivity().finish()
-                } else {
-                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
-                }
-                backPressedTime = System.currentTimeMillis()
-            }
-        })
     }
 }
