@@ -24,9 +24,9 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.camera.CameraActivity
-import com.dicoding.storyapp.helper.reduceFileImage
-import com.dicoding.storyapp.helper.rotateFile
-import com.dicoding.storyapp.helper.uriToFile
+import com.dicoding.storyapp.utils.reduceFileImage
+import com.dicoding.storyapp.utils.rotateFile
+import com.dicoding.storyapp.utils.uriToFile
 import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody

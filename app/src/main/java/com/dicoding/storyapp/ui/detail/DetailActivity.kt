@@ -17,6 +17,7 @@ import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.main.MainActivity
+import com.dicoding.storyapp.utils.DateFormatter
 
 class DetailActivity : AppCompatActivity() {
 
@@ -40,16 +41,25 @@ class DetailActivity : AppCompatActivity() {
 
         if (story != null) {
             setupViewModel()
+            setupData(story)
             setupAction(story)
         }
     }
 
     private fun setupAction(story: StoryEntity) {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            setupData(story)
+        }
+    }
+
+    private fun setupData(story: StoryEntity) {
         fabBookmarkAction(story)
 
         viewModel.getLogin().observe(this) { user ->
             executeGetDetailStory(user.token, story.id)
         }
+
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun executeGetDetailStory(token: String, id: String) {
@@ -58,15 +68,18 @@ class DetailActivity : AppCompatActivity() {
                 when (result) {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        binding.tvMessage.visibility = View.GONE
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.tvMessage.visibility = View.GONE
                         binding.fabDetailSaveBookmark.visibility = View.VISIBLE
 
                         setData(result.data.story)
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.tvMessage.visibility = View.VISIBLE
                     }
                 }
             }
@@ -114,7 +127,7 @@ class DetailActivity : AppCompatActivity() {
 
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
-            tvDetailCreatedAt.text = story.createdAt
+            tvDetailCreatedAt.text = DateFormatter.formatDate(story.createdAt)
         }
     }
 
