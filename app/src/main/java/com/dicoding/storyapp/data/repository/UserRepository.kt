@@ -3,11 +3,11 @@ package com.dicoding.storyapp.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.dicoding.storyapp.data.remote.request.LoginRequest
-import com.dicoding.storyapp.data.remote.request.RegisterRequest
-import com.dicoding.storyapp.data.remote.response.LoginResponse
-import com.dicoding.storyapp.data.remote.response.MessageResponse
-import com.dicoding.storyapp.data.remote.retrofit.ApiService
+import com.dicoding.storyapp.data.source.remote.request.LoginRequest
+import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.source.remote.response.LoginResponse
+import com.dicoding.storyapp.data.source.remote.response.MessageResponse
+import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
 
 class UserRepository private constructor(private val apiService: ApiService) {
 

@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.dicoding.storyapp.data.local.datastore.UserPreferences
-import com.dicoding.storyapp.data.local.entity.StoryEntity
-import com.dicoding.storyapp.data.local.entity.UserEntity
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.local.entity.UserEntity
 import com.dicoding.storyapp.data.repository.StoryRepository
 import kotlinx.coroutines.launch
 

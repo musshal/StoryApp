@@ -10,8 +10,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.entity.StoryEntity
-import com.dicoding.storyapp.data.remote.response.StoryResponse
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory

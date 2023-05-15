@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import com.dicoding.storyapp.databinding.ItemRowStoryBinding
 import com.dicoding.storyapp.ui.detail.DetailActivity
 

@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.remote.request
+package com.dicoding.storyapp.data.source.remote.request
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

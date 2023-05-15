@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.remote.request.NewStoryRequest
+import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.helper.ViewModelFactory

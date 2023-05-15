@@ -1,10 +1,10 @@
-package com.dicoding.storyapp.data.local.datastore
+package com.dicoding.storyapp.data.source.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.dicoding.storyapp.data.local.entity.UserEntity
+import com.dicoding.storyapp.data.source.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

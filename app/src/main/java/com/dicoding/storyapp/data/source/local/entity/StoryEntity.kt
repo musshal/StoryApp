@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.local.entity
+package com.dicoding.storyapp.data.source.local.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

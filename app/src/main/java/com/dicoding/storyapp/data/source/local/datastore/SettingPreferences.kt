@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.local.datastore
+package com.dicoding.storyapp.data.source.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

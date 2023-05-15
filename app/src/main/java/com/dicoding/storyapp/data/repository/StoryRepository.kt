@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import com.dicoding.storyapp.data.local.entity.StoryEntity
-import com.dicoding.storyapp.data.local.room.StoryDao
-import com.dicoding.storyapp.data.remote.request.NewStoryRequest
-import com.dicoding.storyapp.data.remote.response.DetailStoryResponse
-import com.dicoding.storyapp.data.remote.response.MessageResponse
-import com.dicoding.storyapp.data.remote.retrofit.ApiService
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.local.room.StoryDao
+import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
+import com.dicoding.storyapp.data.source.remote.response.DetailStoryResponse
+import com.dicoding.storyapp.data.source.remote.response.MessageResponse
+import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
 import com.dicoding.storyapp.helper.AppExecutors
 
 class StoryRepository private constructor(
@@ -94,6 +94,7 @@ class StoryRepository private constructor(
                 emit(Result.Error(e.message.toString()))
             }
         }
+
     fun setStoryBookmark(story: StoryEntity, bookmarkState: Boolean) {
         story.isBookmarked = bookmarkState
         storyDao.updateStory(story)

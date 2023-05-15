@@ -1,8 +1,8 @@
-package com.dicoding.storyapp.data.local.room
+package com.dicoding.storyapp.data.source.local.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.dicoding.storyapp.data.local.entity.StoryEntity
+import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 
 @Dao
 interface StoryDao {
