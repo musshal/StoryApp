@@ -235,6 +235,7 @@ class InsertActivity : AppCompatActivity() {
                         finish()
                     }
                     is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
                         binding.btnCameraX.isEnabled = true
                         binding.btnGallery.isEnabled = true
                         binding.btnAdd.isEnabled = true
