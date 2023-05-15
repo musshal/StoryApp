@@ -16,7 +16,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityCameraBinding
-import com.dicoding.storyapp.helper.createFile
+import com.dicoding.storyapp.utils.createFile
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import java.lang.Exception
 

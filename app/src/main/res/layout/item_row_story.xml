@@ -20,9 +20,10 @@
             <ImageView
                 android:id="@+id/iv_item_photo"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="200dp"
                 android:scaleType="centerCrop"
-                tools:src="@tools:sample/backgrounds/scenic" />
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:contentDescription="@string/photo_story" />
 
             <LinearLayout
                 android:layout_width="match_parent"

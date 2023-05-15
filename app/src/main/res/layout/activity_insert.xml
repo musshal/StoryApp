@@ -8,20 +8,20 @@
 
     <ImageView
         android:id="@+id/iv_item_image"
-        android:layout_width="wrap_content"
-        android:layout_height="240dp"
-        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
         android:scaleType="fitCenter"
         android:src="@drawable/baseline_image_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAccessibility="no" />
 
     <LinearLayout
         android:id="@+id/ll_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/iv_item_image" >
 
@@ -30,14 +30,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:text="@string/camera"/>
+            android:text="@string/camera"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/btn_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="@string/gallery" />
+            android:text="@string/gallery"
+            tools:ignore="ButtonStyle" />
 
     </LinearLayout>
 

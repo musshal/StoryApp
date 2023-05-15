@@ -19,7 +19,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_photo_camera_24" />
+        app:srcCompat="@drawable/baseline_photo_camera_24"
+        android:importantForAccessibility="no" />
 
 
     <ImageView
@@ -30,7 +31,8 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="@id/view_finder"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_switch_camera_24" />
+        app:srcCompat="@drawable/baseline_switch_camera_24"
+        android:contentDescription="@string/switch_camera" />
 
     <ProgressBar
         android:id="@+id/progressBar"
