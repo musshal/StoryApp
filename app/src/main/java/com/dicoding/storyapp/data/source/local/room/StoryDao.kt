@@ -9,6 +9,9 @@ interface StoryDao {
     @Query("SELECT * FROM stories ORDER BY createdAt DESC")
     fun getAllStories(): LiveData<List<StoryEntity>>
 
+    @Query("SELECT * FROM stories WHERE id = :id")
+    fun getDetailStory(id: String): LiveData<StoryEntity>
+
     @Query("SELECT * FROM stories where isBookmarked = 1")
     fun getBookmarkedStories(): LiveData<List<StoryEntity>>
 

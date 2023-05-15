@@ -7,7 +7,6 @@ import androidx.lifecycle.map
 import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
-import com.dicoding.storyapp.data.source.remote.response.DetailStoryResponse
 import com.dicoding.storyapp.data.source.remote.response.MessageResponse
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
 import com.dicoding.storyapp.helper.AppExecutors
@@ -83,15 +82,24 @@ class StoryRepository private constructor(
         emitSource(localData)
     }
 
-    fun getDetailStory(token: String, id: String) : LiveData<Result<DetailStoryResponse>> =
+    fun getDetailStory(token: String, id: String) : LiveData<Result<StoryEntity>> =
         liveData {
+            var error = false
             emit(Result.Loading)
             try {
                 val responseBody = apiService.getDetailStory("Bearer $token", id)
-                emit(Result.Success(responseBody))
+                emit(Result.Success(responseBody.story))
             } catch (e: Exception) {
                 Log.d("StoryRepository", "getDetailStory: ${e.message.toString()}")
                 emit(Result.Error(e.message.toString()))
+                error = true
+            } finally {
+                if (error) {
+                    val localData: LiveData<Result<StoryEntity>> = storyDao.getDetailStory(id).map {
+                        Result.Success(it)
+                    }
+                    emitSource(localData)
+                }
             }
         }
 

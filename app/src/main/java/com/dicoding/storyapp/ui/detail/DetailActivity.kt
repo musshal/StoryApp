@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.source.local.entity.StoryEntity
-import com.dicoding.storyapp.data.source.remote.response.StoryResponse
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.ActivityDetailBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -69,16 +68,19 @@ class DetailActivity : AppCompatActivity() {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         binding.tvMessage.visibility = View.GONE
+                        binding.cvDetailStory.visibility = View.GONE
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         binding.tvMessage.visibility = View.GONE
+                        binding.cvDetailStory.visibility = View.VISIBLE
                         binding.fabDetailSaveBookmark.visibility = View.VISIBLE
 
-                        setData(result.data.story)
+                        setData(result.data)
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        binding.cvDetailStory.visibility = View.GONE
                         binding.tvMessage.visibility = View.VISIBLE
                     }
                 }
@@ -118,7 +120,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setData(story: StoryResponse) {
+    private fun setData(story: StoryEntity) {
         binding.apply {
             Glide
                 .with(this@DetailActivity)
