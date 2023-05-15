@@ -120,16 +120,16 @@ class RegisterFragment : Fragment() {
         binding.apply {
             when {
                 name.isEmpty() -> {
-                    edRegisterName.error = "Please fill your name"
+                    edRegisterName.error = R.string.please_fill_your_name.toString()
                 }
                 email.isEmpty() -> {
-                    edRegisterEmail.error = "Please fill your email"
+                    edRegisterEmail.error = R.string.please_fill_the_email.toString()
                 }
                 password.isEmpty() -> {
-                    edRegisterPassword.error = "Please fill your password"
+                    edRegisterPassword.error = R.string.please_fill_the_password.toString()
                 }
                 password.length < 8 -> {
-                    edRegisterPassword.error = "Password must be at least 8 character"
+                    edRegisterPassword.error = R.string.password_must_be_at_least_8_character.toString()
                 }
                 else -> {
                     executeRegister(name, email, password)
@@ -160,7 +160,7 @@ class RegisterFragment : Fragment() {
                             progressBar.visibility = View.GONE
                             btnSignUp.isEnabled = true
                             Toast.makeText(context,
-                                "Create an account success",
+                                R.string.create_an_account_success,
                                 Toast.LENGTH_SHORT
                             ).show()
                             moveToLoginFragment()
@@ -168,7 +168,7 @@ class RegisterFragment : Fragment() {
                         is Error -> {
                             btnSignUp.isEnabled = true
                             Toast.makeText(context,
-                                "Create an account failed",
+                                R.string.create_an_account_failed,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

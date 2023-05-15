@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="32dp"
-            android:text="@string/login_to_show_all_stories"
+            android:text="@string/sign_in_to_show_all_stories"
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout

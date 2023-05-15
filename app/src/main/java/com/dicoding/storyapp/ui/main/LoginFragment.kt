@@ -64,12 +64,17 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupAction() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
+            OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
-                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.press_back_again_to_exit,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 backPressedTime = System.currentTimeMillis()
             }
@@ -99,10 +104,10 @@ class LoginFragment : Fragment() {
        binding.apply {
            when {
                email.isEmpty() -> {
-                   edLoginEmail.error = "Please fill the email"
+                   edLoginEmail.error = R.string.please_fill_the_email.toString()
                }
                password.isEmpty() -> {
-                   edLoginPassword.error = "Please fill the password"
+                   edLoginPassword.error = R.string.please_fill_the_password.toString()
                }
                else -> {
                    executeLogin(email, password)
@@ -125,7 +130,7 @@ class LoginFragment : Fragment() {
                             btnSignIn.isEnabled = true
                             Toast.makeText(
                                 context,
-                                "Sign in success",
+                                R.string.sign_in_success,
                                 Toast.LENGTH_SHORT
                             ).show()
 
@@ -136,7 +141,7 @@ class LoginFragment : Fragment() {
                             btnSignIn.isEnabled = true
                             Toast.makeText(
                                 context,
-                                "Sign in failed",
+                                R.string.sign_in_failed,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

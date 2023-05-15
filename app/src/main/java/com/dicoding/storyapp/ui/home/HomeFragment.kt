@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
@@ -73,7 +74,11 @@ class HomeFragment : Fragment() {
                         storiesAdapter.submitList(result.data)
                     }
                     is Result.Error -> {
-                        Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            R.string.failed_to_load_data,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

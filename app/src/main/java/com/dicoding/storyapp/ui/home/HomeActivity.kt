@@ -54,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@HomeActivity,
-                        "Press back again to exit",
+                        R.string.press_back_again_to_exit,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -93,7 +93,7 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this, SettingActivity::class.java))
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -103,13 +103,13 @@ class HomeActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

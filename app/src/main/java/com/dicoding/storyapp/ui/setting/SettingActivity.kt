@@ -25,7 +25,7 @@ class SettingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.elevation = 0f
-        supportActionBar?.title = "Setting"
+        supportActionBar?.setTitle(R.string.setting)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupViewModel()
@@ -80,7 +80,7 @@ class SettingActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -90,13 +90,13 @@ class SettingActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 

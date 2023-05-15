@@ -23,8 +23,6 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var viewModel: DetailViewModel
 
-    private val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
-
     companion object {
         const val EXTRA_STORY = "extra_story"
     }
@@ -35,20 +33,22 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.elevation = 0f
-        supportActionBar?.title = "Detail Story"
+        supportActionBar?.setTitle(R.string.detail_story)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        setupViewModel()
-        setupAction()
+        val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
+
+        if (story != null) {
+            setupViewModel()
+            setupAction(story)
+        }
     }
 
-    private fun setupAction() {
-        if (story != null) {
-            fabBookmarkAction(story)
+    private fun setupAction(story: StoryEntity) {
+        fabBookmarkAction(story)
 
-            viewModel.getLogin().observe(this) { user ->
-                executeGetDetailStory(user.token, story.id)
-            }
+        viewModel.getLogin().observe(this) { user ->
+            executeGetDetailStory(user.token, story.id)
         }
     }
 
@@ -136,7 +136,7 @@ class DetailActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
-            R.id.menu_logout -> {
+            R.id.menu_sign_out -> {
                 showLogoutDialog()
                 true
             }
@@ -146,13 +146,13 @@ class DetailActivity : AppCompatActivity() {
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Logout")
-            .setMessage("Are you serious?")
-            .setPositiveButton("OK") { _, _ ->
+        builder.setTitle(R.string.sign_out)
+            .setMessage(R.string.are_you_sure)
+            .setPositiveButton(R.string.ok) { _, _ ->
                 viewModel.deleteLogin()
                 directToMainActivity()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
 
