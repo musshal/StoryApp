@@ -48,4 +48,7 @@
     <string name="create_an_account_success">Create an account success</string>
     <string name="create_an_account_failed">Create an account failed</string>
     <string name="sign_out">Sign Out</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="detail_photo_story">Detail Photo Story</string>
+    <string name="photo_story">Photo Story</string>
 </resources>
