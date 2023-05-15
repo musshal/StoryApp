@@ -32,6 +32,16 @@ class SettingActivity : AppCompatActivity() {
         initTheme()
     }
 
+    private fun initTheme() {
+        binding.apply {
+            executeGetThemeSetting()
+
+            switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                viewModel.saveThemeSetting(isChecked)
+            }
+        }
+    }
+
     private fun setupViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -39,22 +49,18 @@ class SettingActivity : AppCompatActivity() {
         )[SettingViewModel::class.java]
     }
 
-    private fun initTheme() {
-        executeGetThemeSetting()
-
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
-    }
-
     private fun executeGetThemeSetting() {
-        viewModel.getThemeSetting().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.switchTheme.isChecked = false
+        binding.apply {
+            viewModel.getThemeSetting().observe(
+                this@SettingActivity
+            ) {isDarkModeActive: Boolean ->
+                if (isDarkModeActive) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    switchTheme.isChecked = true
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    switchTheme.isChecked = false
+                }
             }
         }
     }

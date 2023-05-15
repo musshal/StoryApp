@@ -44,26 +44,15 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
-
-        setupViewModel()
-        setupAction()
-        playAnimation()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
-                    requireActivity().finish()
-                } else {
-                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
-                }
-                backPressedTime = System.currentTimeMillis()
-            }
-        })
+
+        setupViewModel()
+        setupAction()
+        playAnimation()
     }
 
     private fun playAnimation() {
@@ -75,6 +64,17 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupAction() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + BACK_PRESSED_INTERVAL > System.currentTimeMillis()) {
+                    requireActivity().finish()
+                } else {
+                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
+
         binding.apply {
             edLoginPassword.setOnEditorActionListener { _, actionId, _ ->
                 clearFocusOnDoneAction(actionId)
@@ -90,43 +90,101 @@ class LoginFragment : Fragment() {
                 val email = edLoginEmail.text.toString()
                 val password = edLoginPassword.text.toString()
 
-                when {
-                    email.isEmpty() -> {
-                        edLoginEmail.error = "Please fill the email"
-                    }
-                    password.isEmpty() -> {
-                        edLoginPassword.error = "Please fill the password"
-                    }
-                    else -> {
-                        executeLogin(email, password)
+                login(email, password)
+            }
+        }
+    }
+
+    private fun login(email: String, password: String) {
+       binding.apply {
+           when {
+               email.isEmpty() -> {
+                   edLoginEmail.error = "Please fill the email"
+               }
+               password.isEmpty() -> {
+                   edLoginPassword.error = "Please fill the password"
+               }
+               else -> {
+                   executeLogin(email, password)
+               }
+           }
+       }
+    }
+
+    private fun executeLogin(email: String, password: String) {
+        binding.apply {
+            viewModel.login(LoginRequest(email, password)).observe(viewLifecycleOwner) { result ->
+                if (result != null) {
+                    when (result) {
+                        is Result.Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                            btnSignIn.isEnabled = false
+                        }
+                        is Result.Success -> {
+                            progressBar.visibility = View.GONE
+                            btnSignIn.isEnabled = true
+                            Toast.makeText(
+                                context,
+                                "Sign in success",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            setLogin(result.data.loginResult)
+                        }
+                        is Result.Error -> {
+                            progressBar.visibility = View.GONE
+                            btnSignIn.isEnabled = true
+                            Toast.makeText(
+                                context,
+                                "Sign in failed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun executeLogin(email: String, password: String) {
-        viewModel.login(LoginRequest(email, password)).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.btnSignIn.isEnabled = false
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.btnSignIn.isEnabled = true
-                        Toast.makeText(context, "Sign in success", Toast.LENGTH_SHORT).show()
+    private fun moveToRegisterFragment() {
+        val registerFragment = RegisterFragment()
+        val fragmentManager = parentFragmentManager
+        fragmentManager.beginTransaction().apply {
+            replace(R.id.frame_container, registerFragment, RegisterFragment::class.java.simpleName)
+            addToBackStack(null)
+            commit()
+        }
+    }
 
-                        setLogin(result.data.loginResult)
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.btnSignIn.isEnabled = true
-                        Toast.makeText(context, "Sign in failed", Toast.LENGTH_SHORT).show()
-                    }
-                }
+    private fun toggleLoginPasswordVisibility(isChecked: Boolean) {
+        binding.apply {
+            val selection = edLoginPassword.selectionEnd
+
+            if (isChecked) {
+                edLoginPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                edLoginPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
+
+            edLoginPassword.setSelection(selection)
+        }
+    }
+
+    private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
+        binding.apply {
+            val imm = requireContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager
+
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                edLoginPassword.clearFocus()
+                imm.hideSoftInputFromWindow(edLoginPassword.windowToken, 0)
+                return true
+            }
+
+            return false
         }
     }
 
@@ -139,44 +197,6 @@ class LoginFragment : Fragment() {
             this,
             ViewModelFactory.getInstance(requireContext())
         )[MainViewModel::class.java]
-    }
-
-    private fun clearFocusOnDoneAction(actionId: Int) : Boolean {
-        val imm = requireContext().getSystemService(
-            Context.INPUT_METHOD_SERVICE
-        ) as InputMethodManager
-
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            binding.edLoginPassword.clearFocus()
-            imm.hideSoftInputFromWindow(binding.edLoginPassword.windowToken, 0)
-            return true
-        }
-
-        return false
-    }
-
-    private fun toggleLoginPasswordVisibility(isChecked: Boolean) {
-        val selection = binding.edLoginPassword.selectionEnd
-
-        if (isChecked) {
-            binding.edLoginPassword.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        } else {
-            binding.edLoginPassword.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        }
-
-        binding.edLoginPassword.setSelection(selection)
-    }
-
-    private fun moveToRegisterFragment() {
-        val registerFragment = RegisterFragment()
-        val fragmentManager = parentFragmentManager
-        fragmentManager.beginTransaction().apply {
-            replace(R.id.frame_container, registerFragment, RegisterFragment::class.java.simpleName)
-            addToBackStack(null)
-            commit()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

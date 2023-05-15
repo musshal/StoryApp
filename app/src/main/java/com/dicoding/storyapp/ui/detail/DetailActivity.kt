@@ -23,6 +23,8 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var viewModel: DetailViewModel
 
+    private val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
+
     companion object {
         const val EXTRA_STORY = "extra_story"
     }
@@ -36,16 +38,17 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.title = "Detail Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val story = intent.getParcelableExtra(EXTRA_STORY) as StoryEntity?
-
         setupViewModel()
-        setupAction(story!!)
+        setupAction()
     }
 
-    private fun setupAction(story: StoryEntity) {
-        fabBookmarkAction(story)
-        viewModel.getLogin().observe(this) { user ->
-            executeGetDetailStory(user.token, story.id)
+    private fun setupAction() {
+        if (story != null) {
+            fabBookmarkAction(story)
+
+            viewModel.getLogin().observe(this) { user ->
+                executeGetDetailStory(user.token, story.id)
+            }
         }
     }
 
