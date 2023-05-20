@@ -8,6 +8,7 @@ import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.source.remote.response.MessageResponse
+import com.dicoding.storyapp.data.source.remote.response.StoryResponse
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
 import com.dicoding.storyapp.helper.AppExecutors
 
@@ -67,6 +68,8 @@ class StoryRepository private constructor(
                     story.description,
                     story.photoUrl,
                     story.createdAt,
+                    story.lat,
+                    story.lon,
                     isBookmarked
                 )
             }
@@ -80,6 +83,18 @@ class StoryRepository private constructor(
             Result.Success(it)
         }
         emitSource(localData)
+    }
+
+    fun getAllStoriesWithLocation(token: String) : LiveData<Result<ArrayList<StoryResponse>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val responseBody = apiService.getAllStoriesWithLocation("Bearer $token")
+            val stories = responseBody.listStory
+            emit(Result.Success(stories))
+        } catch (e: Exception) {
+            Log.d("StoryRepository", "getAllStoriesWithLocation: ${e.message.toString()}")
+            emit(Result.Error(e.message.toString()))
+        }
     }
 
     fun getDetailStory(token: String, id: String) : LiveData<Result<StoryEntity>> =

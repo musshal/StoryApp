@@ -40,7 +40,14 @@ interface ApiService {
     ): MessageResponse
 
     @GET("stories")
-    suspend fun getAllStories(@Header("Authorization") token: String): AllStoriesResponse
+    suspend fun getAllStories(
+        @Header("Authorization") token: String,
+    ): AllStoriesResponse
+
+    @GET("stories?location=1")
+    suspend fun getAllStoriesWithLocation(
+        @Header("Authorization") token: String
+    ): AllStoriesResponse
 
     @GET("stories/{id}")
     suspend fun getDetailStory(

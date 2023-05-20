@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -58,6 +59,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.room:room-runtime:2.5.0-alpha02"
     implementation "androidx.room:room-ktx:2.4.2"
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
     kapt "androidx.room:room-compiler:2.5.0-alpha02"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.0"

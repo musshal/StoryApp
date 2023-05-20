@@ -51,4 +51,6 @@
     <string name="switch_camera">Switch Camera</string>
     <string name="detail_photo_story">Detail Photo Story</string>
     <string name="photo_story">Photo Story</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="maps">Maps</string>
 </resources>

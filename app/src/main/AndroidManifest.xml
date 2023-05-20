@@ -17,6 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StoryApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC-fwWSXPTtD9sqpgEqPxvYTzzuJEUB778" />
+
+        <activity
+            android:name=".ui.maps.MapsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false" />

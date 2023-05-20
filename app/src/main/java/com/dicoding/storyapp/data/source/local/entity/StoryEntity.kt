@@ -25,6 +25,12 @@ class StoryEntity(
     @field:ColumnInfo(name = "createdAt")
     val createdAt: String,
 
+    @field:ColumnInfo(name = "lat")
+    val lat: Double? = null,
+
+    @field:ColumnInfo(name = "lon")
+    val lon: Double? = null,
+
     @field:ColumnInfo(name = "isBookmarked")
     var isBookmarked: Boolean
 ) : Parcelable
