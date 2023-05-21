@@ -2,7 +2,7 @@ package com.dicoding.storyapp.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
 import java.lang.Exception
@@ -32,25 +32,8 @@ class StoryPagingSource(
                 position,
                 params.loadSize
             )
-            val data = responseData.listStory
-            val storyList = data.map { story ->
-                val isBookmarked = storyDao.isStoryBookmarked(story.id)
-                StoryEntity(
-                    story.id,
-                    story.name,
-                    story.description,
-                    story.photoUrl,
-                    story.createdAt,
-                    story.lat,
-                    story.lon,
-                    isBookmarked
-                )
-            }
-            storyDao.deleteAll()
-            storyDao.insertStory(storyList)
-            val localData = storyDao.getAllStories()
             LoadResult.Page(
-                data = localData,
+                data = responseData.listStory,
                 prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
                 nextKey = if (responseData.listStory.isEmpty()) null else position + 1
             )

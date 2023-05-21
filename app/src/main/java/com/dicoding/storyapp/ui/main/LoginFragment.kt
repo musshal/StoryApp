@@ -18,7 +18,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.source.local.entity.UserEntity
+import com.dicoding.storyapp.data.entity.UserEntity
 import com.dicoding.storyapp.data.source.remote.request.LoginRequest
 import com.dicoding.storyapp.data.source.remote.response.LoginResultResponse
 import com.dicoding.storyapp.data.repository.Result

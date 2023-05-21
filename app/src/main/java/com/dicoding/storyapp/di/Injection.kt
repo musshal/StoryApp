@@ -37,10 +37,10 @@ object Injection {
     fun provideUserRepository() : UserRepository = UserRepository.getInstance(apiService)
 
     fun provideStoryRepository(context: Context) : StoryRepository{
-        val database = StoryDatabase.getInstance(context)
-        val storyDao = database.storyDao()
+        val storyDatabase = StoryDatabase.getInstance(context)
+        val storyDao = storyDatabase.storyDao()
         val appExecutors = AppExecutors()
 
-        return StoryRepository.getInstance(apiService, storyDao, appExecutors)
+        return StoryRepository.getInstance(apiService, storyDao, storyDatabase, appExecutors)
     }
 }

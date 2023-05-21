@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.source.local.entity
+package com.dicoding.storyapp.data.entity
 
 data class UserEntity(
     val userId: String,

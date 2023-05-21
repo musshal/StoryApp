@@ -1,6 +1,6 @@
 package com.dicoding.storyapp.data.source.remote.response
 
-import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import com.dicoding.storyapp.data.entity.StoryEntity
 import com.google.gson.annotations.SerializedName
 
 data class DetailStoryResponse(
