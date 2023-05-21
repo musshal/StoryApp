@@ -4,6 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.dicoding.storyapp.data.source.paging.StoryPagingSource
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
@@ -15,6 +21,7 @@ import com.dicoding.storyapp.helper.AppExecutors
 class StoryRepository private constructor(
     private val apiService: ApiService,
     private val storyDao: StoryDao,
+    private val userPreferences: UserPreferences,
     ) {
 
     companion object {
@@ -24,10 +31,11 @@ class StoryRepository private constructor(
         fun getInstance(
             apiService: ApiService,
             storyDao: StoryDao,
+            userPreferences: UserPreferences,
             appExecutors: AppExecutors
         ) : StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService, storyDao)
+                instance ?: StoryRepository(apiService, storyDao, userPreferences)
             }.also { instance = it }
     }
 
@@ -54,6 +62,17 @@ class StoryRepository private constructor(
                 emit(Result.Error(e.message.toString()))
             }
         }
+
+    fun getStories() : LiveData<PagingData<StoryResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService, userPreferences)
+            }
+        ).liveData
+    }
 
     fun getAllStories(token: String) : LiveData<Result<List<StoryEntity>>> = liveData {
         emit(Result.Loading)
@@ -85,16 +104,19 @@ class StoryRepository private constructor(
         emitSource(localData)
     }
 
-    fun getAllStoriesWithLocation(token: String) : LiveData<Result<ArrayList<StoryResponse>>> = liveData {
-        emit(Result.Loading)
-        try {
-            val responseBody = apiService.getAllStoriesWithLocation("Bearer $token")
-            val stories = responseBody.listStory
-            emit(Result.Success(stories))
-        } catch (e: Exception) {
-            Log.d("StoryRepository", "getAllStoriesWithLocation: ${e.message.toString()}")
-            emit(Result.Error(e.message.toString()))
-        }
+    fun getAllStoriesWithLocation(token: String): LiveData<Result<ArrayList<StoryResponse>>> =
+        liveData {
+            emit(Result.Loading)
+            try {
+                val responseBody = apiService.getAllStoriesWithLocation("Bearer $token")
+                val stories = responseBody.listStory
+                emit(Result.Success(stories))
+            } catch (e: Exception) {
+                Log.d(
+                    "StoryRepository",
+                    "getAllStoriesWithLocation: ${e.message.toString()}")
+                emit(Result.Error(e.message.toString()))
+            }
     }
 
     fun getDetailStory(token: String, id: String) : LiveData<Result<StoryEntity>> =
