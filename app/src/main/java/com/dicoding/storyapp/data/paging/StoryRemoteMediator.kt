@@ -5,7 +5,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.dicoding.storyapp.data.source.local.room.RemoteKeys
+import com.dicoding.storyapp.data.entity.RemoteKeys
 import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDatabase
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService

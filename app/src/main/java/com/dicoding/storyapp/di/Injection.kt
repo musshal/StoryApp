@@ -41,6 +41,6 @@ object Injection {
         val storyDao = storyDatabase.storyDao()
         val appExecutors = AppExecutors()
 
-        return StoryRepository.getInstance(apiService, storyDao, storyDatabase, appExecutors)
+        return StoryRepository.getInstance(apiService, storyDatabase, storyDao, appExecutors)
     }
 }

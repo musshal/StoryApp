@@ -20,8 +20,8 @@ import com.dicoding.storyapp.helper.AppExecutors
 
 class StoryRepository private constructor(
     private val apiService: ApiService,
+    private val storyDatabase: StoryDatabase,
     private val storyDao: StoryDao,
-    private val storyDatabase: StoryDatabase
     ) {
 
     companion object {
@@ -30,12 +30,12 @@ class StoryRepository private constructor(
 
         fun getInstance(
             apiService: ApiService,
-            storyDao: StoryDao,
             storyDatabase: StoryDatabase,
+            storyDao: StoryDao,
             appExecutors: AppExecutors
         ) : StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService, storyDao, storyDatabase)
+                instance ?: StoryRepository(apiService, storyDatabase, storyDao)
             }.also { instance = it }
     }
 
