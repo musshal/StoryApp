@@ -36,6 +36,11 @@ class HomeFragment : Fragment() {
         setupAction()
     }
 
+    override fun onResume() {
+        super.onResume()
+        storiesHomeAdapter.refresh()
+    }
+
     private fun setupAction() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             setupData()

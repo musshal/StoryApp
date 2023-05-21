@@ -43,6 +43,7 @@ class StoriesHomeAdapter(private val onBookmarkClick: (StoryEntity) -> Unit) :
         return ViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val story = getItem(position)
 
