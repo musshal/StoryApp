@@ -77,6 +77,25 @@ class HomeActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
+
+        binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        val homeFragment =
+                            supportFragmentManager.findFragmentByTag("f0") as? HomeFragment
+                        homeFragment?.scrollToTop()
+                    }
+                    1 -> {
+                        val bookmarkFragment =
+                            supportFragmentManager.findFragmentByTag("f1") as? BookmarkFragment
+                        bookmarkFragment?.scrollToTop()
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

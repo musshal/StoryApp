@@ -71,4 +71,9 @@ class BookmarkFragment : Fragment() {
             adapter = storiesBookmarkAdapter
         }
     }
+
+    fun scrollToTop() {
+        val recyclerView = binding.rvStories
+        recyclerView.smoothScrollToPosition(0)
+    }
 }

@@ -58,7 +58,6 @@ class HomeFragment : Fragment() {
         viewModel.getLogin().observe(viewLifecycleOwner) { user ->
             if (user.token.isNotBlank()) {
                 executeGetAllStories(user.token)
-
             }
         }
 
@@ -86,5 +85,10 @@ class HomeFragment : Fragment() {
                 viewModel.saveStory(story)
             }
         }
+    }
+
+    fun scrollToTop() {
+        val recyclerView = binding.rvStories
+        recyclerView.smoothScrollToPosition(0)
     }
 }

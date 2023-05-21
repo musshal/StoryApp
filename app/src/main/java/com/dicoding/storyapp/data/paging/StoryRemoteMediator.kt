@@ -50,7 +50,11 @@ class StoryRemoteMediator(
         }
 
         return try {
-            val responseData = apiService.getAllStories("Bearer $token", page, state.config.pageSize)
+            val responseData = apiService.getAllStories(
+                "Bearer $token",
+                page,
+                state.config.pageSize
+            )
             val endOfPaginationReached = responseData.listStory.isEmpty()
 
             storyDatabase.withTransaction {
@@ -83,7 +87,9 @@ class StoryRemoteMediator(
             storyDatabase.remoteKeysDao().getRemoteKeysId(data.id)
         }
     }
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, StoryEntity>): RemoteKeys? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(
+        state: PagingState<Int, StoryEntity>
+    ): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
                 storyDatabase.remoteKeysDao().getRemoteKeysId(id)

@@ -10,7 +10,6 @@ import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.entity.UserEntity
 import com.dicoding.storyapp.data.repository.StoryRepository
-import com.dicoding.storyapp.data.source.remote.response.StoryResponse
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
