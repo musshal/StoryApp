@@ -14,8 +14,8 @@ import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 import com.dicoding.storyapp.databinding.ItemRowStoryBinding
 import com.dicoding.storyapp.ui.detail.DetailActivity
 
-class StoriesAdapter(private val onBookmarkClick: (StoryEntity) -> Unit) :
-    ListAdapter<StoryEntity, StoriesAdapter.ViewHolder>(DIFF_CALLBACK) {
+class StoriesBookmarkAdapter(private val onBookmarkClick: (StoryEntity) -> Unit) :
+    ListAdapter<StoryEntity, StoriesBookmarkAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     inner class ViewHolder(val binding: ItemRowStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {

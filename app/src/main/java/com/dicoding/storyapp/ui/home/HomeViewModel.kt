@@ -18,13 +18,12 @@ class HomeViewModel(
     private val storyRepository: StoryRepository
     ) : ViewModel() {
 
-    val story: LiveData<PagingData<StoryResponse>> = storyRepository.getStories().cachedIn(viewModelScope)
-
     fun getLogin() : LiveData<UserEntity> = userPreferences.getLogin().asLiveData()
 
     fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
 
-    fun getAllStories(token: String) = storyRepository.getAllStories(token)
+    fun getAllStories(token: String): LiveData<PagingData<StoryEntity>> =
+        storyRepository.getAllStories(token).cachedIn(viewModelScope)
 
     fun getBookmarkedStories() = storyRepository.getBookmarkedStories()
 

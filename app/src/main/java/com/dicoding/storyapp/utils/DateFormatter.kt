@@ -10,7 +10,6 @@ object DateFormatter {
             Locale.getDefault()
         )
         val outputFormat = SimpleDateFormat("dd MMMM yyyy | HH:mm:ss", Locale.getDefault())
-
         val parsedDate: Date = inputFormat.parse(date) as Date
 
         return outputFormat.format(parsedDate)

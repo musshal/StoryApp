@@ -41,15 +41,10 @@ interface ApiService {
     ): MessageResponse
 
     @GET("stories")
-    suspend fun getStories(
+    suspend fun getAllStories(
         @Header("Authorization") token: String,
         @Query("page") page: Int,
         @Query("size") size: Int
-    ): AllStoriesResponse
-
-    @GET("stories")
-    suspend fun getAllStories(
-        @Header("Authorization") token: String,
     ): AllStoriesResponse
 
     @GET("stories?location=1")

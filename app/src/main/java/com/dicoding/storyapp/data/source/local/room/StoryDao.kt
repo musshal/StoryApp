@@ -7,7 +7,7 @@ import com.dicoding.storyapp.data.source.local.entity.StoryEntity
 @Dao
 interface StoryDao {
     @Query("SELECT * FROM stories ORDER BY createdAt DESC")
-    fun getAllStories(): LiveData<List<StoryEntity>>
+    fun getAllStories(): List<StoryEntity>
 
     @Query("SELECT * FROM stories WHERE id = :id")
     fun getDetailStory(id: String): LiveData<StoryEntity>
