@@ -48,9 +48,9 @@ class StoryPagingSource(
             }
             storyDao.deleteAll()
             storyDao.insertStory(storyList)
-            val dataDao = storyDao.getAllStories()
+            val localData = storyDao.getAllStories()
             LoadResult.Page(
-                data = dataDao,
+                data = localData,
                 prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
                 nextKey = if (responseData.listStory.isEmpty()) null else position + 1
             )
