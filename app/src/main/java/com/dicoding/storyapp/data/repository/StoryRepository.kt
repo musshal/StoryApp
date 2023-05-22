@@ -4,8 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import com.dicoding.storyapp.data.source.local.entity.StoryEntity
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.dicoding.storyapp.data.entity.StoryEntity
+import com.dicoding.storyapp.data.paging.StoryRemoteMediator
 import com.dicoding.storyapp.data.source.local.room.StoryDao
+import com.dicoding.storyapp.data.source.local.room.StoryDatabase
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.source.remote.response.MessageResponse
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
@@ -13,6 +20,7 @@ import com.dicoding.storyapp.helper.AppExecutors
 
 class StoryRepository private constructor(
     private val apiService: ApiService,
+    private val storyDatabase: StoryDatabase,
     private val storyDao: StoryDao,
     ) {
 
@@ -22,11 +30,12 @@ class StoryRepository private constructor(
 
         fun getInstance(
             apiService: ApiService,
+            storyDatabase: StoryDatabase,
             storyDao: StoryDao,
             appExecutors: AppExecutors
         ) : StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService, storyDao)
+                instance ?: StoryRepository(apiService, storyDatabase, storyDao)
             }.also { instance = it }
     }
 
@@ -54,32 +63,32 @@ class StoryRepository private constructor(
             }
         }
 
-    fun getAllStories(token: String) : LiveData<Result<List<StoryEntity>>> = liveData {
-        emit(Result.Loading)
-        try {
-            val responseBody = apiService.getAllStories("Bearer $token")
-            val stories = responseBody.listStory
-            val storyList = stories.map { story ->
-                val isBookmarked = storyDao.isStoryBookmarked(story.id)
-                StoryEntity(
-                    story.id,
-                    story.name,
-                    story.description,
-                    story.photoUrl,
-                    story.createdAt,
-                    isBookmarked
-                )
+    fun getAllStories(token: String) : LiveData<PagingData<StoryEntity>> {
+        @OptIn(ExperimentalPagingApi::class)
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            remoteMediator = StoryRemoteMediator(storyDatabase, apiService, token),
+            pagingSourceFactory = {
+                storyDatabase.storyDao().getAllStories()
             }
-            storyDao.deleteAll()
-            storyDao.insertStory(storyList)
-        } catch (e: Exception) {
-            Log.d("StoryRepository", "getAllStories: ${e.message.toString()}")
-            emit(Result.Error(e.message.toString()))
-        }
-        val localData: LiveData<Result<List<StoryEntity>>> = storyDao.getAllStories().map {
-            Result.Success(it)
-        }
-        emitSource(localData)
+        ).liveData
+    }
+
+    fun getAllStoriesWithLocation(token: String): LiveData<Result<List<StoryEntity>>> =
+        liveData {
+            emit(Result.Loading)
+            try {
+                val responseBody = apiService.getAllStoriesWithLocation("Bearer $token")
+                val stories = responseBody.listStory
+                emit(Result.Success(stories))
+            } catch (e: Exception) {
+                Log.d(
+                    "StoryRepository",
+                    "getAllStoriesWithLocation: ${e.message.toString()}")
+                emit(Result.Error(e.message.toString()))
+            }
     }
 
     fun getDetailStory(token: String, id: String) : LiveData<Result<StoryEntity>> =

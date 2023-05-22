@@ -1,21 +1,21 @@
 package com.dicoding.storyapp.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.storyapp.databinding.FragmentBookmarkBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.adapter.StoriesAdapter
+import com.dicoding.storyapp.ui.adapter.StoriesBookmarkAdapter
 
 class BookmarkFragment : Fragment() {
 
     private lateinit var binding: FragmentBookmarkBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var storiesAdapter: StoriesAdapter
+    private lateinit var storiesBookmarkAdapter: StoriesBookmarkAdapter
 
 
     override fun onCreateView(
@@ -43,7 +43,7 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        storiesAdapter = StoriesAdapter { story ->
+        storiesBookmarkAdapter = StoriesBookmarkAdapter { story ->
             if (story.isBookmarked) {
                 viewModel.deleteStory(story)
             } else {
@@ -56,10 +56,10 @@ class BookmarkFragment : Fragment() {
         viewModel.getBookmarkedStories().observe(viewLifecycleOwner) { bookmarkedStory ->
             if (bookmarkedStory.isEmpty()) {
                 binding.tvMessage.visibility = View.VISIBLE
-                storiesAdapter.submitList(bookmarkedStory)
+                storiesBookmarkAdapter.submitList(bookmarkedStory)
             } else {
                 binding.tvMessage.visibility = View.GONE
-                storiesAdapter.submitList(bookmarkedStory)
+                storiesBookmarkAdapter.submitList(bookmarkedStory)
             }
         }
     }
@@ -68,7 +68,12 @@ class BookmarkFragment : Fragment() {
         binding.rvStories.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = storiesAdapter
+            adapter = storiesBookmarkAdapter
         }
+    }
+
+    fun scrollToTop() {
+        val recyclerView = binding.rvStories
+        recyclerView.smoothScrollToPosition(0)
     }
 }

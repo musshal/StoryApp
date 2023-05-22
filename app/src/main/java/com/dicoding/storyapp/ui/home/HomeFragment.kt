@@ -1,24 +1,22 @@
 package com.dicoding.storyapp.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentHomeBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.adapter.StoriesAdapter
+import com.dicoding.storyapp.ui.adapter.LoadingStateAdapter
+import com.dicoding.storyapp.ui.adapter.StoriesHomeAdapter
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var storiesAdapter: StoriesAdapter
+    private lateinit var storiesHomeAdapter: StoriesHomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +46,11 @@ class HomeFragment : Fragment() {
         binding.rvStories.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = storiesAdapter
+            adapter = storiesHomeAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    storiesHomeAdapter.retry()
+                }
+            )
         }
     }
 
@@ -63,25 +65,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun executeGetAllStories(token: String) {
-        viewModel.getAllStories(token).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        storiesAdapter.submitList(result.data)
-                    }
-                    is Result.Error -> {
-                        Toast.makeText(
-                            context,
-                            R.string.failed_to_load_data,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
+        viewModel.getAllStories(token).observe(viewLifecycleOwner) {
+            storiesHomeAdapter.submitData(lifecycle, it)
         }
     }
 
@@ -93,12 +78,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        storiesAdapter = StoriesAdapter { story ->
+        storiesHomeAdapter = StoriesHomeAdapter { story ->
             if (story.isBookmarked) {
                 viewModel.deleteStory(story)
             } else {
                 viewModel.saveStory(story)
             }
         }
+    }
+
+    fun scrollToTop() {
+        val recyclerView = binding.rvStories
+        recyclerView.smoothScrollToPosition(0)
     }
 }

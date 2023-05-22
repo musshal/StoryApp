@@ -1,7 +1,6 @@
 package com.dicoding.storyapp.ui.home
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityHomeBinding
@@ -16,10 +16,12 @@ import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.adapter.SectionsPagerAdapter
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.main.MainActivity
+import com.dicoding.storyapp.ui.maps.MapsActivity
 import com.dicoding.storyapp.ui.setting.SettingActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+@Suppress("PrivatePropertyName")
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
@@ -76,6 +78,25 @@ class HomeActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab: TabLayout.Tab, position: Int ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
+
+        binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        val homeFragment =
+                            supportFragmentManager.findFragmentByTag("f0") as? HomeFragment
+                        homeFragment?.scrollToTop()
+                    }
+                    1 -> {
+                        val bookmarkFragment =
+                            supportFragmentManager.findFragmentByTag("f1") as? BookmarkFragment
+                        bookmarkFragment?.scrollToTop()
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -87,6 +108,10 @@ class HomeActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.menu_insert -> {
                 startActivity(Intent(this, InsertActivity::class.java))
+                true
+            }
+            R.id.menu_maps -> {
+                startActivity(Intent(this, MapsActivity::class.java))
                 true
             }
             R.id.menu_setting -> {

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,12 +14,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
+import com.dicoding.storyapp.data.repository.Result.Error
 import com.dicoding.storyapp.data.repository.Result.Loading
 import com.dicoding.storyapp.data.repository.Result.Success
-import com.dicoding.storyapp.data.repository.Result.Error
+import com.dicoding.storyapp.data.source.remote.request.RegisterRequest
 import com.dicoding.storyapp.databinding.FragmentRegisterBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity

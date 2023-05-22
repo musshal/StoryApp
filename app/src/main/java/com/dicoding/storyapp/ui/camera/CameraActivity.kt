@@ -2,12 +2,12 @@ package com.dicoding.storyapp.ui.camera
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -16,9 +16,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityCameraBinding
-import com.dicoding.storyapp.utils.createFile
 import com.dicoding.storyapp.ui.insert.InsertActivity
-import java.lang.Exception
+import com.dicoding.storyapp.utils.createFile
 
 class CameraActivity : AppCompatActivity() {
 

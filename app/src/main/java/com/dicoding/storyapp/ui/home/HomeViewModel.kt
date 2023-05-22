@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
-import com.dicoding.storyapp.data.source.local.entity.StoryEntity
-import com.dicoding.storyapp.data.source.local.entity.UserEntity
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.dicoding.storyapp.data.entity.StoryEntity
+import com.dicoding.storyapp.data.entity.UserEntity
 import com.dicoding.storyapp.data.repository.StoryRepository
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -19,7 +21,8 @@ class HomeViewModel(
 
     fun deleteLogin() { viewModelScope.launch { userPreferences.deleteLogin() } }
 
-    fun getAllStories(token: String) = storyRepository.getAllStories(token)
+    fun getAllStories(token: String): LiveData<PagingData<StoryEntity>> =
+        storyRepository.getAllStories(token).cachedIn(viewModelScope)
 
     fun getBookmarkedStories() = storyRepository.getBookmarkedStories()
 

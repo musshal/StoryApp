@@ -48,7 +48,7 @@
             app:boxCornerRadiusTopStart="20dp"
             app:endIconMode="clear_text">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.dicoding.storyapp.customview.TextInputEditTextEmail
                 android:id="@+id/ed_login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             app:boxCornerRadiusTopStart="20dp"
             app:endIconMode="clear_text">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.dicoding.storyapp.customview.TextInputEditTextPassword
                 android:id="@+id/ed_login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

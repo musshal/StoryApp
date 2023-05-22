@@ -1,9 +1,9 @@
 package com.dicoding.storyapp.ui.main
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.databinding.ActivityMainBinding

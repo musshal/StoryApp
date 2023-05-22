@@ -1,44 +1,48 @@
-package com.dicoding.storyapp.ui.setting
+package com.dicoding.storyapp.ui.maps
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.databinding.ActivitySettingBinding
+import com.dicoding.storyapp.data.repository.Result
+import com.dicoding.storyapp.databinding.ActivityMapsBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.main.MainActivity
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class SettingActivity : AppCompatActivity() {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var binding: ActivitySettingBinding
-    private lateinit var viewModel: SettingViewModel
+    private lateinit var mMap: GoogleMap
+    private lateinit var binding: ActivityMapsBinding
+    private lateinit var viewModel: MapsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingBinding.inflate(layoutInflater)
+
+        binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.elevation = 0f
-        supportActionBar?.setTitle(R.string.setting)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
         setupViewModel()
-        initTheme()
     }
 
-    private fun initTheme() {
-        binding.apply {
-            executeGetThemeSetting()
-
-            switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                viewModel.saveThemeSetting(isChecked)
-            }
+    private fun setupAction() {
+        viewModel.getLogin().observe(this) { user ->
+            executeGetAllStoriesWithLocation(user.token)
         }
     }
 
@@ -46,31 +50,35 @@ class SettingActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             ViewModelFactory.getInstance(this)
-        )[SettingViewModel::class.java]
+        )[MapsViewModel::class.java]
     }
 
-    private fun executeGetThemeSetting() {
-        binding.apply {
-            viewModel.getThemeSetting().observe(
-                this@SettingActivity
-            ) {isDarkModeActive: Boolean ->
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    switchTheme.isChecked = true
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    switchTheme.isChecked = false
+    private fun executeGetAllStoriesWithLocation(token: String) {
+        viewModel.getAllStoriesWithLocation(token).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {}
+                    is Result.Success -> {
+                        result.data.forEach { story ->
+                            val location = LatLng(story.lat!!, story.lon!!)
+                            mMap.addMarker(MarkerOptions().position(location))
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+                        }
+                    }
+                    is Result.Error -> {}
                 }
             }
         }
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        setupAction()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        viewModel.getLogin().observe(this) { user ->
-            if (user.token.isNotBlank()) {
-                menuInflater.inflate(R.menu.option_menu_3, menu)
-            }
-        }
+        menuInflater.inflate(R.menu.option_menu_3, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

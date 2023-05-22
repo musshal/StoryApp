@@ -1,4 +1,4 @@
-package com.dicoding.storyapp.data.source.local.entity
+package com.dicoding.storyapp.data.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -24,6 +24,12 @@ class StoryEntity(
 
     @field:ColumnInfo(name = "createdAt")
     val createdAt: String,
+
+    @field:ColumnInfo(name = "lat")
+    val lat: Double? = null,
+
+    @field:ColumnInfo(name = "lon")
+    val lon: Double? = null,
 
     @field:ColumnInfo(name = "isBookmarked")
     var isBookmarked: Boolean
