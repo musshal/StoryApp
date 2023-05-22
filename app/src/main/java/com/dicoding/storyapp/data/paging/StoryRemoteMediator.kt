@@ -9,7 +9,6 @@ import com.dicoding.storyapp.data.entity.RemoteKeys
 import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDatabase
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
-import java.lang.Exception
 
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator(

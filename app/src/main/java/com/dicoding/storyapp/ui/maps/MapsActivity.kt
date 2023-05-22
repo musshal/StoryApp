@@ -1,23 +1,23 @@
 package com.dicoding.storyapp.ui.maps
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.repository.Result
+import com.dicoding.storyapp.databinding.ActivityMapsBinding
+import com.dicoding.storyapp.helper.ViewModelFactory
+import com.dicoding.storyapp.ui.main.MainActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.dicoding.storyapp.databinding.ActivityMapsBinding
-import com.dicoding.storyapp.helper.ViewModelFactory
-import com.dicoding.storyapp.ui.main.MainActivity
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 

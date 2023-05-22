@@ -19,14 +19,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
 import com.dicoding.storyapp.data.entity.UserEntity
+import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.data.source.remote.request.LoginRequest
 import com.dicoding.storyapp.data.source.remote.response.LoginResultResponse
-import com.dicoding.storyapp.data.repository.Result
 import com.dicoding.storyapp.databinding.FragmentLoginBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.insert.InsertActivity
 import com.dicoding.storyapp.ui.setting.SettingActivity
 
+@Suppress("PrivatePropertyName")
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding

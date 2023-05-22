@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.dicoding.storyapp.data.repository.StoryRepository
+import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.data.source.local.datastore.SettingPreferences
 import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.source.local.room.StoryDatabase
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiConfig
-import com.dicoding.storyapp.data.repository.StoryRepository
-import com.dicoding.storyapp.data.repository.UserRepository
 import com.dicoding.storyapp.helper.AppExecutors
 
 object Injection {

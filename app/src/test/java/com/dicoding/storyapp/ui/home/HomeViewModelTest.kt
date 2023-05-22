@@ -95,6 +95,7 @@ class HomeViewModelTest {
             }
         }
 
+        @Suppress("SameReturnValue")
         override fun getRefreshKey(state: PagingState<Int, LiveData<List<StoryEntity>>>): Int {
             return 0
         }

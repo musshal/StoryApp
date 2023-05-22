@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.remote.retrofit.ApiService
-import java.lang.Exception
 
 class StoryPagingSource(
     private val apiService: ApiService,

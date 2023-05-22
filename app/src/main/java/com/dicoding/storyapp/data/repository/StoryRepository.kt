@@ -9,8 +9,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
-import com.dicoding.storyapp.data.paging.StoryRemoteMediator
 import com.dicoding.storyapp.data.entity.StoryEntity
+import com.dicoding.storyapp.data.paging.StoryRemoteMediator
 import com.dicoding.storyapp.data.source.local.room.StoryDao
 import com.dicoding.storyapp.data.source.local.room.StoryDatabase
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest

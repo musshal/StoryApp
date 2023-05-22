@@ -1,7 +1,8 @@
 package com.dicoding.storyapp.utils
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 object DateFormatter {
     fun formatDate(date: String): String? {

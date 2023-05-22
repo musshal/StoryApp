@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,19 +14,20 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.storyapp.R
-import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
 import com.dicoding.storyapp.data.repository.Result
+import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
 import com.dicoding.storyapp.databinding.ActivityInsertBinding
 import com.dicoding.storyapp.helper.ViewModelFactory
 import com.dicoding.storyapp.ui.camera.CameraActivity
+import com.dicoding.storyapp.ui.main.MainActivity
 import com.dicoding.storyapp.utils.reduceFileImage
 import com.dicoding.storyapp.utils.rotateFile
 import com.dicoding.storyapp.utils.uriToFile
-import com.dicoding.storyapp.ui.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -251,6 +251,7 @@ class InsertActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("BooleanMethodIsAlwaysInverted")
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }

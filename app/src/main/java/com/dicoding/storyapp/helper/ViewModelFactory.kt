@@ -3,10 +3,10 @@ package com.dicoding.storyapp.helper
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory
-import com.dicoding.storyapp.data.source.local.datastore.SettingPreferences
-import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.repository.UserRepository
+import com.dicoding.storyapp.data.source.local.datastore.SettingPreferences
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.di.Injection
 import com.dicoding.storyapp.ui.detail.DetailViewModel
 import com.dicoding.storyapp.ui.home.HomeViewModel

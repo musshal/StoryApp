@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.dicoding.storyapp.data.entity.UserEntity
+import com.dicoding.storyapp.data.repository.StoryRepository
 import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.source.remote.request.NewStoryRequest
-import com.dicoding.storyapp.data.repository.StoryRepository
 import kotlinx.coroutines.launch
 
 class   InsertViewModel(

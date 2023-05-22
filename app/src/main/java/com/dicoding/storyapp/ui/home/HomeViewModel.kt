@@ -6,10 +6,10 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import com.dicoding.storyapp.data.entity.StoryEntity
 import com.dicoding.storyapp.data.entity.UserEntity
 import com.dicoding.storyapp.data.repository.StoryRepository
+import com.dicoding.storyapp.data.source.local.datastore.UserPreferences
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
