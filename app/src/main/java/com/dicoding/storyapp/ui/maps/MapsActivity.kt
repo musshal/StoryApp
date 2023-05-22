@@ -61,7 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     is Result.Success -> {
                         result.data.forEach { story ->
                             val location = LatLng(story.lat!!, story.lon!!)
-                            mMap.addMarker(MarkerOptions().position(location))
+                            mMap.addMarker(MarkerOptions().position(location).title(story.name))
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
                         }
                     }
